@@ -1,5 +1,5 @@
 import numpy
-from nltk.cluster import KMeansClusterer, euclidean_distance
+from nltk.cluster import KMeansClusterer, GAAClusterer, euclidean_distance
 
 job_titles = [
     'Not so skilled worker',
@@ -39,8 +39,8 @@ def vectorspaced(title):
     title_components = [word.lower() for word in title.split()]
     return numpy.array([word in title_components and 1 or 0 for word in words])
 
-cluster = KMeansClusterer(5, euclidean_distance)
-cluster.cluster([vectorspaced(title) for title in job_titles], True)
+cluster = GAAClusterer(5, euclidean_distance)
+cluster.cluster([vectorspaced(title) for title in job_titles])
 
 # NOTE: This is inefficient, cluster.classify should really just be called when
 # you are classifying previously unseen examples!
