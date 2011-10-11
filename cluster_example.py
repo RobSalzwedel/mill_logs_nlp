@@ -1,53 +1,53 @@
+import sys
+
 import numpy
 from nltk.cluster import KMeansClusterer, GAAClusterer, euclidean_distance
+import nltk.corpus
+from nltk import decorators
+import nltk.stem
 
-job_titles = [
-    'Not so skilled worker',
-    'Skilled worker',
-    'Banana picker',
-    'Police officer',
-    'Office worker',
-    'Fireman',
-    'IT consultant',
-    'Rapist of old ladies',
-    'Engineer',
-    'Stupid bastard son',
-    'Genious computer analyst',
-    'Computer banana peeler',
-    'Potato peeler',
-    'CEO of a major business',
-    'Business economist',
-    'Data analyst',
-    'Economist analyst bastard',
-    'Psychologist data enumerator',
-    'Psychologist genious',
-    'Evil genious',
-    'Murderer and rapist of cats',
-    'Cat psychologist',
-    'Top Software Engineer in IT with NLTK experience',
-    'xim',
-    'fission6'
-]
+stemmer_func = nltk.stem.EnglishStemmer().stem
+stopwords = set(nltk.corpus.stopwords.words('english'))
 
-words = set()
-for title in job_titles:
-    for word in title.split():
-        words.add(word.lower())
-words = list(words)
+@decorators.memoize
+def normalize_word(word):
+    return stemmer_func(word.lower())
 
+def get_words(titles):
+    words = set()
+    for title in job_titles:
+        for word in title.split():
+            words.add(normalize_word(word))
+    return list(words)
+
+@decorators.memoize
 def vectorspaced(title):
-    title_components = [word.lower() for word in title.split()]
-    return numpy.array([word in title_components and 1 or 0 for word in words])
+    title_components = [normalize_word(word) for word in title.split()]
+    return numpy.array([
+        word in title_components and not word in stopwords
+        for word in words], numpy.short)
 
-# cluster = KMeansClusterer(5, euclidean_distance)
-cluster = GAAClusterer(5)
-cluster.cluster([vectorspaced(title) for title in job_titles])
+if __name__ == '__main__':
 
-# NOTE: This is inefficient, cluster.classify should really just be called when
-# you are classifying previously unseen examples!
-classified_examples = [
-        cluster.classify(vectorspaced(title)) for title in job_titles
-    ]
+    filename = 'example.txt'
+    if len(sys.argv) == 2:
+        filename = sys.argv[1]
 
-for cluster_id, title in sorted(zip(classified_examples, job_titles)):
-    print cluster_id, title
+    with open(filename) as title_file:
+
+        job_titles = [line.strip() for line in title_file.readlines()]
+
+        words = get_words(job_titles)
+
+        # cluster = KMeansClusterer(5, euclidean_distance)
+        cluster = GAAClusterer(5)
+        cluster.cluster([vectorspaced(title) for title in job_titles if title])
+
+        # NOTE: This is inefficient, cluster.classify should really just be
+        # called when you are classifying previously unseen examples!
+        classified_examples = [
+                cluster.classify(vectorspaced(title)) for title in job_titles
+            ]
+
+        for cluster_id, title in sorted(zip(classified_examples, job_titles)):
+            print cluster_id, title
