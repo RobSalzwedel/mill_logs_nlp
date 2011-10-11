@@ -39,7 +39,8 @@ def vectorspaced(title):
     title_components = [word.lower() for word in title.split()]
     return numpy.array([word in title_components and 1 or 0 for word in words])
 
-cluster = GAAClusterer(5, euclidean_distance)
+# cluster = KMeansClusterer(5, euclidean_distance)
+cluster = GAAClusterer(5)
 cluster.cluster([vectorspaced(title) for title in job_titles])
 
 # NOTE: This is inefficient, cluster.classify should really just be called when
