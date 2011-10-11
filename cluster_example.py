@@ -48,5 +48,5 @@ classified_examples = [
         cluster.classify(vectorspaced(title)) for title in job_titles
     ]
 
-for cluster, title in sorted(zip(classified_examples, job_titles)):
-    print cluster, title
+for cluster_id, title in sorted(zip(classified_examples, job_titles)):
+    print cluster_id, title
