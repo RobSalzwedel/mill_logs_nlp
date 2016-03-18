@@ -22,14 +22,12 @@ from sklearn import feature_extraction
 data = pd.read_csv('mill_notifications_2015.csv')
 notifications = data['Title']
 
-
 ## Stop words, stemming tokenizing
 
 ### load nltk's English stopwords as variable called 'stopwords'
 ### It's a list of words that carry no real meaning. (Think about appending the list with mill)
 stopwords = nltk.corpus.stopwords.words('english')
 print stopwords[:10]
-
 
 # load nltk's SnowballStemmer as variabled 'stemmer'
 from nltk.stem.snowball import SnowballStemmer
@@ -65,11 +63,11 @@ totalvocab_tokenized = []
 for i in notifications:
     allwords_stemmed = tokenize_and_stem(i) #for each item in 'synopses', tokenize/stem
     totalvocab_stemmed.extend(allwords_stemmed) #extend the 'totalvocab_stemmed' list
-    
+
     allwords_tokenized = tokenize_only(i)
     totalvocab_tokenized.extend(allwords_tokenized)
 
-    
+
 vocab_frame = pd.DataFrame({'words': totalvocab_tokenized}, index = totalvocab_stemmed)
 print 'there are ' + str(vocab_frame.shape[0]) + ' items in vocab_frame'
 
@@ -80,8 +78,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 #define vectorizer parameters
 tfidf_vectorizer = TfidfVectorizer(max_df=0.95, max_features=2000,
-                                 min_df=0.01, stop_words='english',
-                                 use_idf=True, tokenizer=tokenize_and_stem, ngram_range=(1,1))
+                                 min_df=0.001, stop_words='english',
+                                 use_idf=True, tokenizer=tokenize_only, ngram_range=(1,1))
 
 tfidf_matrix = tfidf_vectorizer.fit_transform(notifications) #fit the vectorizer to synopses
 
@@ -107,7 +105,7 @@ clusters = km.labels_.tolist()
 
 from sklearn.externals import joblib
 
-#uncomment the below to save your model 
+#uncomment the below to save your model
 #since I've already run my model I am loading from the pickle
 
 joblib.dump(km,  'doc_cluster.pkl')
@@ -140,12 +138,12 @@ print()
 cluster_colors = {0: '#1b9e77', 1: '#d95f02', 2: '#7570b3', 3: '#e7298a', 4: '#66a61e'}
 
 #set up cluster names using a dict
-cluster_names = {0: 'One', 
-                 1: 'Two', 
-                 2: 'Three', 
-                 3: 'Four', 
+cluster_names = {0: 'One',
+                 1: 'Two',
+                 2: 'Three',
+                 3: 'Four',
                  4: 'Five'}
-                 
+
 df = pd.DataFrame(dict(x=xs, y=ys, label=clusters))
 
 groups = df.groupby('label')
@@ -157,8 +155,8 @@ ax.margins(0.05) # Optional, just adds 5% padding to the autoscaling
 #iterate through groups to layer the plot
 #note that I use the cluster_name and cluster_color dicts with the 'name' lookup to return the appropriate color/label
 for name, group in groups:
-    ax.plot(group.x, group.y, marker='o', linestyle='', ms=12, 
-            label=cluster_names[name], color=cluster_colors[name], 
+    ax.plot(group.x, group.y, marker='o', linestyle='', ms=12,
+            label=cluster_names[name], color=cluster_colors[name],
             mec='none')
     ax.set_aspect('auto')
     ax.tick_params(\
@@ -173,5 +171,5 @@ for name, group in groups:
         left='off',      # ticks along the bottom edge are off
         top='off',         # ticks along the top edge are off
         labelleft='off')
-    
+
 plt.show() #show the plot'''
