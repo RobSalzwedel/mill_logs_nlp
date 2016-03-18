@@ -6,12 +6,11 @@ import nltk.corpus
 from nltk import decorators
 import nltk.stem
 
-stemmer_func = nltk.stem.EnglishStemmer().stem
 stopwords = set(nltk.corpus.stopwords.words('english'))
 
 @decorators.memoize
 def normalize_word(word):
-    return stemmer_func(word.lower())
+    return word.lower()
 
 def get_words(titles):
     words = set()
@@ -39,8 +38,8 @@ if __name__ == '__main__':
 
         words = get_words(job_titles)
 
-        # cluster = KMeansClusterer(5, euclidean_distance)
-        cluster = GAAClusterer(5)
+        cluster = KMeansClusterer(5, euclidean_distance)
+        #cluster = GAAClusterer(2)
         cluster.cluster([vectorspaced(title) for title in job_titles if title])
 
         # NOTE: This is inefficient, cluster.classify should really just be
