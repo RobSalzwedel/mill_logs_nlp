@@ -22,13 +22,26 @@ data = pd.read_csv('mill_logs_2015.csv')
 # Clean up data
 #delete NaN rows in dates columns, can't use math.isnan because other fields
 #are of type string
-count = 0
 for i in data.index:
     if type(data['date'][i])==float:
         data = data.drop([i])
         
-        
+#Reset indices after dropping rows        
+data = data.reset_index().ix[:,1:]
 
+# Make the additional information another logged event
+for i in data.index:
+    if  data['date'][i]=='Additional Information':
+        data['type'][i]= 'Additional Information'
+        data['date'][i] = data['date'][i-1]
+        data['description'][i] = data['date'][i+1]
+
+for i in data.index:
+    if type(data['type'][i])==float or type(data['description'][i])==float :
+        data = data.drop([i])
+#Reset indices after dropping rows        
+data = data.reset_index().ix[:,1:]
+        
 # Units at duvha, removed '03' because it is offline indefinitely
 units = ['01','02','04','05','06','1 & 2']
 
