@@ -36,14 +36,8 @@ for i in data.index:
         data['date'][i] = data['date'][i-1]
         data['description'][i] = data['date'][i+1]
 
-for i in data.index:
-    if type(data['type'][i])==float or type(data['description'][i])==float :
-        data = data.drop([i])
-#Reset indices after dropping rows        
-data = data.reset_index().ix[:,1:]
-        
 # Units at duvha, removed '03' because it is offline indefinitely
-units = ['01','02','04','05','06','1 & 2']
+units = ['01','02','04','05','06','1 & 2', '3 & 4', '5 & 6', 'EOD', 'OP']
 
 #Locate the index of each units mill logs in
 unit_index = {}
@@ -57,5 +51,13 @@ num_logs[1] =unit_index['04']-unit_index['02']
 num_logs[2] =unit_index['05']-unit_index['04']
 num_logs[3] =unit_index['06']-unit_index['05']
 num_logs[4] =unit_index['1 & 2']-unit_index['06']
-
 total_logs = num_logs.sum()
+
+
+#Create a new column to identify the logs origin
+for i in range(0,len(units)-1):
+    data['log'][unit_index[units[i]]:unit_index[units[i+1]]] = units[i]
+data['log'][0:unit_index[units[0]]] = 'all'    
+data['log'][unit_index[units[-1]]:] = 'OP'
+        
+
