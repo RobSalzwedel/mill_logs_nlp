@@ -55,9 +55,18 @@ total_logs = num_logs.sum()
 
 
 #Create a new column to identify the logs origin
+data['log'] = ''
 for i in range(0,len(units)-1):
     data['log'][unit_index[units[i]]:unit_index[units[i+1]]] = units[i]
 data['log'][0:unit_index[units[0]]] = 'all'    
 data['log'][unit_index[units[-1]]:] = 'OP'
-        
+   
 
+#Final data clean up     
+for i in data.index:
+    if type(data['type'][i])==float or type(data['description'][i])==float  :
+        data = data.drop([i])
+#Reset indices after dropping rows        
+data = data.reset_index().ix[:,1:]
+        
+        
