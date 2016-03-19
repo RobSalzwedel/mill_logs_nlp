@@ -12,6 +12,7 @@ Description: Plan to read the mill logs from CSV to pd.dataframe and clean up da
 # Have the raw data, but it is duplicated under different headings
 
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt 
 
 data = pd.read_csv('mill_logs_2015.csv')
@@ -26,10 +27,11 @@ for i in units:
     unit_index[i] = data['date'][data['date'] == i].index[0]
 
 # Find the number of loged events per online unit
-num_logs = {}
-num_logs[1] = unit_index['02']-unit_index['01']
-num_logs[2] =unit_index['04']-unit_index['02']
-num_logs[4] =unit_index['05']-unit_index['04']
-num_logs[5] =unit_index['06']-unit_index['05']
-num_logs[6] =unit_index['1 & 2']-unit_index['06']
+num_logs = np.empty([5,1],int)
+num_logs[0] = unit_index['02']-unit_index['01']
+num_logs[1] =unit_index['04']-unit_index['02']
+num_logs[2] =unit_index['05']-unit_index['04']
+num_logs[3] =unit_index['06']-unit_index['05']
+num_logs[4] =unit_index['1 & 2']-unit_index['06']
 
+total_logs = num_logs.sum()
