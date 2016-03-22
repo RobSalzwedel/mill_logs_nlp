@@ -1,17 +1,19 @@
 from clean_logs import clean_data
-import pandas as pd
-import nltk
+
 import re
 import math
 import random
-import numpy as np
 import collections
+import sys
+
+import nltk
+import numpy as np
+import tensorflow as tf
+import pandas as pd
 
 from six.moves import xrange  # pylint: disable=redefined-builtin
-import tensorflow as tf
 
-# ascii to UTF-8
-import sys
+reload(sys)
 sys.setdefaultencoding("UTF-8")
 
 #Step 1: Import raw data and clean up into a usable dataframe
