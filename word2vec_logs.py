@@ -47,7 +47,7 @@ def tokenize_only(text):
     return filtered_tokens
 
 # Loop through log strings, convert to list of words (log_i_words)
-# Extend the words list 
+# Extend the words list
 # TODO: Consider zero padding before and after each log.
 words = []
 for i in logs:
@@ -116,7 +116,7 @@ def generate_batch(batch_size, num_skips, skip_window):
     buffer.append(data[data_index])
     data_index = (data_index + 1) % len(data)
   return batch, labels
-  
+
 
 batch, labels = generate_batch(batch_size=8, num_skips=2, skip_window=1)
 for i in range(8):
@@ -171,12 +171,7 @@ with graph.as_default():
   optimizer = tf.train.GradientDescentOptimizer(1.0).minimize(loss)
 
   # Compute the cosine similarity between minibatch examples and all embeddings.
-  norm = tf.sqrt(tf.reduce_sum(tf.square(embeddings), 1, keep_dims=True))
-  normalized_embeddings = embeddings / norm
-  valid_embeddings = tf.nn.embedding_lookup(
-      normalized_embeddings, valid_dataset)
-  similarity = tf.matmul(
-      valid_embeddings, normalized_embeddings, transpose_b=True)
+  h
 
 # Step 5: Begin training.
 num_steps = 100001
@@ -208,6 +203,8 @@ with tf.Session(graph=graph) as session:
     if step % 10000 == 0:
       sim = similarity.eval()
       for i in xrange(valid_size):
+        # Look up the word from reverse dictionary, given sampled example from
+        # the head of the distribution
         valid_word = reverse_dictionary[valid_examples[i]]
         top_k = 8 # number of nearest neighbors
         nearest = (-sim[i, :]).argsort()[1:top_k+1]
@@ -252,3 +249,9 @@ try:
 
 except ImportError:
   print("Please install sklearn and matplotlib to visualize embeddings.")
+
+# Step 7: Save to file
+save = True
+if save:
+    np.save('final_embeddings',embeddings)
+    pickle.dump(reverse_dictionary, open( "reverse_dictionary.dict", "wb" ) )
