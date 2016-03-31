@@ -6,7 +6,7 @@ import random
 import collections
 import sys
 
-import nltk
+
 import numpy as np
 import tensorflow as tf
 import pandas as pd
@@ -37,15 +37,13 @@ del data         #Save memory
 #NB excludes alphanum eg. 2A and '1A is kept as a word
 #TODO: Remove all numbers and punctuation from alphanums
 def tokenize_only(text):
-    # first tokenize by sentence, then by word to ensure that punctuation is caught as it's own token
-    tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
-    filtered_tokens = []
-    # filter out any tokens not containing letters (e.g., numeric tokens, raw punctuation)
-    for token in tokens:
-        if re.search('[a-zA-Z]', token):
-            filtered_tokens.append(token)
-    return filtered_tokens
-
+    from nltk import RegexpTokenizer
+    #Tokenize using a regular expression, 
+    #We use consecutive letters (exclude punction and numbers)
+    tokenizer = RegexpTokenizer(r'''([A-Za-z]+[/|-|\][A-Za-z]+|[A-Za-z]+)''')
+    tokens = [word.lower() for word in tokenizer.tokenize(text)]
+    return tokens
+    
 # Loop through log strings, convert to list of words (log_i_words)
 # Extend the words list
 # TODO: Consider zero padding before and after each log.
@@ -57,7 +55,7 @@ for i in logs:
 print('Data size', len(words))
 
 # Step 2: Build the dictionary and replace rare words with UNK token.
-vocabulary_size = 5000
+vocabulary_size = 3000
 
 def build_dataset(words):
   #Sort words from most common to least common and store in count
@@ -171,7 +169,12 @@ with graph.as_default():
   optimizer = tf.train.GradientDescentOptimizer(1.0).minimize(loss)
 
   # Compute the cosine similarity between minibatch examples and all embeddings.
-  h
+  norm = tf.sqrt(tf.reduce_sum(tf.square(embeddings), 1, keep_dims=True))
+  normalized_embeddings = embeddings / norm
+  valid_embeddings = tf.nn.embedding_lookup(
+  normalized_embeddings, valid_dataset)
+  similarity = tf.matmul(
+  valid_embeddings, normalized_embeddings, transpose_b=True)
 
 # Step 5: Begin training.
 num_steps = 100001
