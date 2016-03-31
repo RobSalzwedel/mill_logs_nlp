@@ -256,5 +256,6 @@ except ImportError:
 # Step 7: Save to file
 save = True
 if save:
-    np.save('final_embeddings',embeddings)
+    import pickle
+    np.save('final_embeddings',final_embeddings)
     pickle.dump(reverse_dictionary, open( "reverse_dictionary.dict", "wb" ) )
