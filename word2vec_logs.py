@@ -16,19 +16,26 @@ from six.moves import xrange  # pylint: disable=redefined-builtin
 reload(sys)
 sys.setdefaultencoding("UTF-8")
 
-#Step 1: Import raw data and clean up into a usable dataframe
+# Step 1: Import raw data and clean up into a usable dataframw
 data = pd.read_csv('mill_logs_2015.csv')
 unit_indices = {}
 data, unit_indices = clean_data(data)
 
+# Only select the data for grouped for the units, it is duplicated under all, 1&2, etc...
 data = data[unit_indices['01']:unit_indices['1 & 2']]
 
 
-#Step 1: Create the raw format for training, ie list of words from descriptions
+# Step 1: Create the raw format for training, ie list of words from descriptions
 
 # Create a list of logs
 logs = data['description']
 
+del data         #Save memory
+
+
+#Tokenize, remove numbers, punctuation, and split string into a list of words
+#NB excludes alphanum eg. 2A and '1A is kept as a word
+#TODO: Remove all numbers and punctuation from alphanums
 def tokenize_only(text):
     # first tokenize by sentence, then by word to ensure that punctuation is caught as it's own token
     tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
@@ -39,11 +46,13 @@ def tokenize_only(text):
             filtered_tokens.append(token)
     return filtered_tokens
 
+# Loop through log strings, convert to list of words (log_i_words)
+# Extend the words list 
+# TODO: Consider zero padding before and after each log.
 words = []
-
 for i in logs:
-    allwords_tokenized = tokenize_only(i)
-    words.extend(allwords_tokenized)
+    log_i_words = tokenize_only(i)
+    words.extend(log_i_words)
 
 print('Data size', len(words))
 
@@ -51,12 +60,13 @@ print('Data size', len(words))
 vocabulary_size = 5000
 
 def build_dataset(words):
+  #Sort words from most common to least common and store in count
   count = [['UNK', -1]]
   count.extend(collections.Counter(words).most_common(vocabulary_size - 1))
   dictionary = dict()
   for word, _ in count:
     dictionary[word] = len(dictionary)
-  data = list()
+    data = list()
   unk_count = 0
   for word in words:
     if word in dictionary:
@@ -66,7 +76,12 @@ def build_dataset(words):
       unk_count += 1
     data.append(index)
   count[0][1] = unk_count
+  # reverse_dictionary{key = index in count, value = word}
   reverse_dictionary = dict(zip(dictionary.values(), dictionary.keys()))
+  # data: list of word indexes
+  # count: list of tuples (word = str, count = int)
+  # dictionary: dict {key = word, value = index in count}
+  # reverse_dictionary: dict {key = index in count, value = word}
   return data, count, dictionary, reverse_dictionary
 
 data, count, dictionary, reverse_dictionary = build_dataset(words)
@@ -101,6 +116,7 @@ def generate_batch(batch_size, num_skips, skip_window):
     buffer.append(data[data_index])
     data_index = (data_index + 1) % len(data)
   return batch, labels
+  
 
 batch, labels = generate_batch(batch_size=8, num_skips=2, skip_window=1)
 for i in range(8):
@@ -203,7 +219,11 @@ with tf.Session(graph=graph) as session:
   final_embeddings = normalized_embeddings.eval()
 
 # Step 6: Visualize the embeddings.
-
+# TODO: Clean up the visualization, reduce overlap, select specific words
+# TODO: Save a text file with words closest to eachother (within threshhold)
+# TODO: Cluster the words, and print out word clusters
+# can think about using cosine distance
+# Plot with labels
 def plot_with_labels(low_dim_embs, labels, filename='tsne.png'):
   assert low_dim_embs.shape[0] >= len(labels), "More labels than embeddings"
   plt.figure(figsize=(18, 18))  #in inches
@@ -219,6 +239,7 @@ def plot_with_labels(low_dim_embs, labels, filename='tsne.png'):
 
   plt.savefig(filename)
 
+#Method ensures dependancies are available
 try:
   from sklearn.manifold import TSNE
   import matplotlib.pyplot as plt
