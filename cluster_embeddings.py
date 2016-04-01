@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 import pickle
 #Load the embeddgings from file
-embeddings = np.load('embeddings.npy')
+embeddings = np.load('final_embeddings.npy')
 print (embeddings.shape)
 reverse_dictionary = pickle.load(open( "reverse_dictionary.dict", "rb" ))
 
@@ -32,4 +32,9 @@ for i in xrange(100):
     for k in xrange(1,closest_k):
         close_word = reverse_dictionary[nearest[k]]
         log_str = "%s %s," % (log_str, close_word)
-    print(log_str)
+    print log_str
+
+for i in xrange(num_embed):
+    for idx, similarity in enumerate(sim_matrix[i]):
+        if similarity>= 0.45 and similarity <=0.999:
+            print reverse_dictionary[i] + ', '+ reverse_dictionary[idx]
