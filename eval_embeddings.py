@@ -3,7 +3,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 import pickle
 #Load the embeddgings from file
 embeddings = np.load('final_embeddings.npy')
-print (embeddings.shape)
+print np.shape(embeddings)
+
 reverse_dictionary = pickle.load(open( "reverse_dictionary.dict", "rb" ))
 
 # Need to evaluate the cosine distance between all embeddings and each other
