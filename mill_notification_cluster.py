@@ -68,7 +68,7 @@ for i in notifications:
     totalvocab_tokenized.extend(allwords_tokenized)
 
 
-vocab_frame = pd.DataFrame({'words': totalvocab_tokenized}, index = totalvocab_stemmed)
+vocab_frame = pd.DataFrame({'words': totalvocab_tokenized}, index=totalvocab_stemmed)
 print 'there are ' + str(vocab_frame.shape[0]) + ' items in vocab_frame'
 
 print vocab_frame.head()
@@ -95,7 +95,7 @@ print
 
 from sklearn.cluster import KMeans
 
-num_clusters = 20
+num_clusters = 100
 
 km = KMeans(n_clusters=num_clusters)
 
