@@ -38,12 +38,12 @@ del data         #Save memory
 #TODO: Remove all numbers and punctuation from alphanums
 def tokenize_only(text):
     from nltk import RegexpTokenizer
-    #Tokenize using a regular expression, 
+    #Tokenize using a regular expression,
     #We use consecutive letters (exclude punction and numbers)
-    tokenizer = RegexpTokenizer(r'''([A-Za-z]+[/|-|\][A-Za-z]+|[A-Za-z]+)''')
+    tokenizer = RegexpTokenizer(r"""([A-Za-z]+[/|-|\][A-Za-z]+|[A-Za-z]+)""")
     tokens = [word.lower() for word in tokenizer.tokenize(text)]
     return tokens
-    
+
 # Loop through log strings, convert to list of words (log_i_words)
 # Extend the words list
 # TODO: Consider zero padding before and after each log.
@@ -55,7 +55,7 @@ for i in logs:
 print('Data size', len(words))
 
 # Step 2: Build the dictionary and replace rare words with UNK token.
-vocabulary_size = 3000
+vocabulary_size = 3715
 
 def build_dataset(words):
   #Sort words from most common to least common and store in count
@@ -177,7 +177,7 @@ with graph.as_default():
   valid_embeddings, normalized_embeddings, transpose_b=True)
 
 # Step 5: Begin training.
-num_steps = 100001
+num_steps = 200001
 
 with tf.Session(graph=graph) as session:
   # We must initialize all variables before we use them.
@@ -224,38 +224,103 @@ with tf.Session(graph=graph) as session:
 # TODO: Cluster the words, and print out word clusters
 # can think about using cosine distance
 # Plot with labels
-def plot_with_labels(low_dim_embs, labels, filename='tsne.png'):
-  assert low_dim_embs.shape[0] >= len(labels), "More labels than embeddings"
-  plt.figure(figsize=(18, 18))  #in inches
-  for i, label in enumerate(labels):
-    x, y = low_dim_embs[i,:]
-    plt.scatter(x, y)
-    plt.annotate(label,
-                 xy=(x, y),
-                 xytext=(5, 2),
-                 textcoords='offset points',
-                 ha='right',
-                 va='bottom')
+#def plot_with_labels(low_dim_embs, labels, filename='tsne.png'):
+#  assert low_dim_embs.shape[0] >= len(labels), "More labels than embeddings"
+#  plt.figure(figsize=(18, 18))  #in inches
+#  for i, label in enumerate(labels):
+#    x, y = low_dim_embs[i,:]
+#    plt.scatter(x, y)
+#    plt.annotate(label,
+#                 xy=(x, y),
+#                 xytext=(5, 2),
+#                 textcoords='offset points',
+#                 ha='right',
+#                 va='bottom')
+#
+#  plt.savefig(filename)
+#
+##Method ensures dependancies are available
+#try:
+#  from sklearn.manifold import TSNE
+#  import matplotlib.pyplot as plt
+#
+#  tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
+#  plot_only = 500
+#  low_dim_embs = tsne.fit_transform(final_embeddings[:plot_only,:])
+#  labels = [reverse_dictionary[i] for i in xrange(plot_only)]
+#  plot_with_labels(low_dim_embs, labels)
+#
+#except ImportError:
+#  print("Please install sklearn and matplotlib to visualize embeddings.")
+#
+## Step 7: Save to file
+#save = True
+#if save:
+#    import pickle
+#    np.save('final_embeddings',final_embeddings)
+#    pickle.dump(reverse_dictionary, open( "reverse_dictionary.dict", "wb" ) )
 
-  plt.savefig(filename)
+tokenized_logs = []
+for idx, log in enumerate(logs):
+   tokenized_logs.append(tokenize_only(log))
 
-#Method ensures dependancies are available
-try:
-  from sklearn.manifold import TSNE
-  import matplotlib.pyplot as plt
+embedded_logs = []
+embedded_log_arrays=[]
+embedded_log_vecs = []
+for idx, tokenized_log in enumerate(tokenized_logs):
+    embedded_log = []
+    for token in tokenized_log:
+         embedding = final_embeddings[dictionary[token],:]
+         embedded_log.append(embedding)
+    embedded_logs.append(embedded_log)
+    embedded_log_arrays.append(np.stack(embedded_log,axis=0))
+    embedded_log_vecs.append(np.sum(np.stack(embedded_log,axis=0),axis=0))
 
-  tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
-  plot_only = 500
-  low_dim_embs = tsne.fit_transform(final_embeddings[:plot_only,:])
-  labels = [reverse_dictionary[i] for i in xrange(plot_only)]
-  plot_with_labels(low_dim_embs, labels)
+embsum_matrix = np.stack(embedded_log_vecs)
+7
+# Step 8: Clustter the logs based on the feauture array built from word embeddings
+from sklearn.cluster import KMeans
 
-except ImportError:
-  print("Please install sklearn and matplotlib to visualize embeddings.")
+num_clusters = 1000
 
-# Step 7: Save to file
-save = True
-if save:
-    import pickle
-    np.save('final_embeddings',final_embeddings)
-    pickle.dump(reverse_dictionary, open( "reverse_dictionary.dict", "wb" ) )
+km = KMeans(n_clusters=num_clusters,verbose=True)
+
+km.fit(embsum_matrix)
+
+clusters = km.labels_.tolist()
+
+#Create a list of descriptions grouped by cluster
+cluster_list = []
+for i in xrange (1000):
+    cluster_list.append([])
+
+for idx, cluster in enumerate(clusters):
+    cluster_list[cluster].append(logs[idx+12813])
+
+
+import numpy as np
+
+from sklearn.cluster import DBSCAN
+from sklearn import metrics
+from sklearn.datasets.samples_generator import make_blobs
+from sklearn.preprocessing import StandardScaler
+
+# Compute DBSCAN
+db = DBSCAN(eps=0.3, min_samples=10).fit(embsum_matrix)
+core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+core_samples_mask[db.core_sample_indices_] = True
+labels = db.labels_
+
+# Number of clusters in labels, ignoring noise if present.
+n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+
+print('Estimated number of clusters: %d' % n_clusters_)
+print("Homogeneity: %0.3f" % metrics.homogeneity_score(labels_true, labels))
+print("Completeness: %0.3f" % metrics.completeness_score(labels_true, labels))
+print("V-measure: %0.3f" % metrics.v_measure_score(labels_true, labels))
+print("Adjusted Rand Index: %0.3f"
+      % metrics.adjusted_rand_score(labels_true, labels))
+print("Adjusted Mutual Information: %0.3f"
+      % metrics.adjusted_mutual_info_score(labels_true, labels))
+print("Silhouette Coefficient: %0.3f"
+      % metrics.silhouette_score(X, labels))
