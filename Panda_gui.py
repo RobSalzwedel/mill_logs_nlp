@@ -17,6 +17,7 @@ LARGE_FONT = ("Verdanna",12)
 style.use("ggplot")
 
 df = pd.read_csv('tinker_test.csv')
+df['label_status'] = False
 
 f = Figure()
 a = f.add_subplot(111)
@@ -107,14 +108,14 @@ class TextLabel(tk.Frame):
         #                    command = lambda: controller.show_frame(StartPage))
         #button1.pack()
         
-        button2 = tk.Button(self, text = 'Label data', 
+        button2 = tk.Button(self, text = 'delete display', 
                             command = self.delete_display)
         button2.pack(side = 'right')
          
-        button3 = tk.Button(self, text = "Unlabel", 
+        button3 = tk.Button(self, text = "display", 
                             command = self.display)
         button3.pack(side='right')
-        button4= tk.Button(self, text = "Print stuff", 
+        button4= tk.Button(self, text = "label", 
                             command = self.label)
         button4.pack(side='right')
          
@@ -128,44 +129,41 @@ class TextLabel(tk.Frame):
         #toolbar = NavigationToolbar2TkAgg(canvas, self)
         #toolbar.update()
         #canvas._tkcanvas.pack(side = tk.TOP, fill = tk.BOTH, expand = True)
-   
 
-            
         self.display()
        
     def label (self):
-        for i in self.var:
-            print i.get()
-            if i.get():
-                i.labelled = True
-            i.set(0)
+        for key in self.var:
+            print self.var[key].get()
+            if self.var[key].get():
+                df['label_status'][key] = True
 
         print '-----'
+        print df
     
-    def label_status (self):
-        for i in self.var:
-            print i.labelled
-            
+
     def display(self):
-        self.vsb = tk.Scrollbar(self, orient="vertical")
-        self.text = tk.Text(self, width=40, height=20, 
+        'Displays the unlabeled data in a scrollable list of checkboxes'
+        self.vsb = tk.Scrollbar(self, orient = "vertical")
+        self.text = tk.Text(self, width = 40, height = 20, 
                             yscrollcommand=self.vsb.set)
         self.vsb.config(command = self.text.yview)
-        self.vsb.pack(side = "right", fill="y")
-        self.text.pack(side = "left", fill="both", expand=True)
-
-        self.cb = []
-        self.var = []
-        for i in range(20):
-            vari = tk.IntVar()
-            vari.labelled = False
-            self.var.append(vari)
-            cbi = tk.Checkbutton(self, text = str(df['data'][i]), width = 50, 
-                                 justify = tk.LEFT, variable = self.var[i],
-                                 wraplength = 300)
-            self.cb.append(cbi)
-            self.text.window_create("end", window = self.cb[i])            
-            self.text.insert("end", "\n") # to force one checkbox per line
+        self.vsb.pack(side = "right", fill = "y")
+        self.text.pack(side = "left", fill = "both", expand = True)
+        
+        # Dictionaries of checkboxes (cb), & checkbox_status (var), 
+        #key = df.index, value = df['data'][index] if not labeled
+        self.cb = {}
+        self.var = {}
+        for i in df.index:
+            if not df['label_status'][i]:
+                self.var[i] = tk.IntVar()
+                self.var[i].labelled = False
+                self.cb[i] = tk.Checkbutton(self, text = str(df['data'][i]), width = 50, 
+                                     justify = tk.LEFT, variable = self.var[i],
+                                     wraplength = 300)
+                self.text.window_create("end", window = self.cb[i])            
+                self.text.insert("end", "\n") # to force one checkbox per line
     
     def delete_display(self):
         self.text.destroy()
