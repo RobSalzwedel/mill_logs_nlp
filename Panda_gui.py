@@ -87,6 +87,7 @@ class StartPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text = "Welcome, do you agree to the terms and conditions of use", 
                          font = LARGE_FONT)
+        
         label.pack(pady = 10, padx = 10)
         button = tk.Button(self, text = "Agree", 
                             command=lambda: controller.show_frame(TextLabel))
@@ -110,15 +111,19 @@ class TextLabel(tk.Frame):
         
         button2 = tk.Button(self, text = 'delete display', 
                             command = self.delete_display)
-        button2.pack(side = 'right')
+        button2.pack(side = 'top')
          
         button3 = tk.Button(self, text = "display", 
                             command = self.display)
-        button3.pack(side='right')
+        button3.pack(side='top')
+        
         button4= tk.Button(self, text = "label", 
                             command = self.label)
-        button4.pack(side='right')
-         
+        button4.pack(side='top')
+        
+        sb_cluster = tk.Spinbox(self, from_=0, to=10)
+        sb_cluster.pack(side = 'top')
+
          
         #Adding matplot lib to tkinter window 
         #canvas = FigureCanvasTkAgg(f, self)
@@ -170,7 +175,7 @@ class TextLabel(tk.Frame):
         self.vsb.destroy()
         
 app = Spookfish()
-app.geometry("600x400")
+app.geometry("700x400")
 #ani = animation.FuncAnimation(f, animate, interval = 5000)
 app.mainloop()
 
