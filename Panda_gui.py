@@ -7,6 +7,8 @@ from matplotlib import style
 import matplotlib.pyplot as plt
 import ttk
 import Tkinter as tk
+from PIL import Image, ImageTk
+import os
 
 import json
 import urllib2
@@ -16,8 +18,11 @@ import pandas as pd
 LARGE_FONT = ("Verdanna",12)
 style.use("ggplot")
 
-df = pd.read_csv('tinker_test.csv')
+df = pd.read_csv('tkinter_test.csv')
 df['label_status'] = False
+labels = ['state of plant', 'notification', 'mill in service', 'mill shut down', 'oil burners in service',
+          'oil burners shutdown', 'feeder stalled', 'feeder fails to pick up speed',
+          'feeder blocked', 'feeder sheering pin', 'mill reject box burnt', ]
 
 f = Figure()
 a = f.add_subplot(111)
@@ -48,9 +53,9 @@ def animate(i):
     
 class Spookfish(tk.Tk):
     def __init__(self, *args, **kwargs):
-
         tk.Tk.__init__(self, *args,**kwargs)
-        
+        tk.Tk.resizable(self, width= False, height=False)
+
         tk.Tk.wm_title(self, "Spookfish")
         
         container = tk.Frame(self)
@@ -85,7 +90,7 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text = "Welcome, do you agree to the terms and conditions of use", 
+        label = tk.Label(self, text = '''Welcome to spookfish text labelling app, Rob Salzwedel is a boss.''',
                          font = LARGE_FONT)
         
         label.pack(pady = 10, padx = 10)
@@ -94,6 +99,15 @@ class StartPage(tk.Frame):
         button.pack()
         button2 = tk.Button(self, text = "Disagree", command=quit)
         button2.pack()
+        
+
+        image = Image.open("spookfish.jpg")
+        photo = ImageTk.PhotoImage(image)
+         
+        label = tk.Label(self,image=photo)
+        label.image = photo # keep a reference!
+        label.pack(side = 'bottom', fill = 'both',expand = 'true')
+
   
         
 class TextLabel(tk.Frame):
@@ -108,23 +122,24 @@ class TextLabel(tk.Frame):
         #button1 = tk.Button(self, text = "Back to home", 
         #                    command = lambda: controller.show_frame(StartPage))
         #button1.pack()
+        frame1 = tk.Frame(self)
+        frame1.pack(side='right',fill='y')
         
-        button2 = tk.Button(self, text = 'delete display', 
-                            command = self.delete_display)
-        button2.pack(side = 'top')
-         
-        button3 = tk.Button(self, text = "display", 
-                            command = self.display)
-        button3.pack(side='top')
+        self.lb_labels = tk.Listbox(frame1, width = 40, height = 20, selectmode = 'multiple',
+                                    bd = 0)
+        self.lb_labels.pack(side='top',fill='x')
+        for label in labels:
+            self.lb_labels.insert(tk.END, label)
         
-        button4= tk.Button(self, text = "label", 
+        button1= tk.Button(frame1, text = "Label", 
                             command = self.label)
-        button4.pack(side='top')
-        
-        sb_cluster = tk.Spinbox(self, from_=0, to=10)
-        sb_cluster.pack(side = 'top')
+        button1.pack(side='top', fill='x')
+        button2= tk.Button(frame1, text = "test", 
+                            command = self.test)
+        button2.pack(side='top', fill='x')
+        self.sb_cluster = tk.Spinbox(frame1, from_ = 0, to = 100, command = self.refresh_display)
+        self.sb_cluster.pack(side = 'top')
 
-         
         #Adding matplot lib to tkinter window 
         #canvas = FigureCanvasTkAgg(f, self)
         #canvas.show()
@@ -138,6 +153,7 @@ class TextLabel(tk.Frame):
         self.display()
        
     def label (self):
+        '''Labels the selected items and updates the display.'''
         for key in self.var:
             print self.var[key].get()
             if self.var[key].get():
@@ -145,13 +161,15 @@ class TextLabel(tk.Frame):
 
         print '-----'
         print df
+        self.refresh_display()
     
 
     def display(self):
-        'Displays the unlabeled data in a scrollable list of checkboxes'
+        '''Displays the unlabeled data matching the cluster selected in the spin
+        box as a scrollable list of checkboxes'''
         self.vsb = tk.Scrollbar(self, orient = "vertical")
-        self.text = tk.Text(self, width = 40, height = 20, 
-                            yscrollcommand=self.vsb.set)
+        self.text = tk.Text(self, width = 40, height = 20, bd = 0,  
+                            yscrollcommand=self.vsb.set, state='disabled')
         self.vsb.config(command = self.text.yview)
         self.vsb.pack(side = "right", fill = "y")
         self.text.pack(side = "left", fill = "both", expand = True)
@@ -161,21 +179,30 @@ class TextLabel(tk.Frame):
         self.cb = {}
         self.var = {}
         for i in df.index:
-            if not df['label_status'][i]:
-                self.var[i] = tk.IntVar()
-                self.var[i].labelled = False
-                self.cb[i] = tk.Checkbutton(self, text = str(df['data'][i]), width = 50, 
-                                     justify = tk.LEFT, variable = self.var[i],
-                                     wraplength = 300)
-                self.text.window_create("end", window = self.cb[i])            
-                self.text.insert("end", "\n") # to force one checkbox per line
+            if int(self.sb_cluster.get()) == int(df['cluster'][i]):
+                if not df['label_status'][i]:
+                    self.var[i] = tk.IntVar()
+                    self.var[i].labelled = False
+                    self.cb[i] = tk.Checkbutton(self, text = str(df['data'][i]), 
+                                         justify = tk.LEFT, variable = self.var[i],
+                                         wraplength = 800, width = 100)
+                    self.text.window_create("end", window = self.cb[i])            
+                    self.text.insert("end", "\n") # to force one checkbox per line
     
     def delete_display(self):
+        '''Deletes the text display'''
         self.text.destroy()
         self.vsb.destroy()
-        
+    
+    def refresh_display(self):
+        self.delete_display()
+        self.display()
+   
+    def test(self):
+        print type(self.sb_cluster.get())
+
 app = Spookfish()
-app.geometry("700x400")
+app.geometry("1440x900")
 #ani = animation.FuncAnimation(f, animate, interval = 5000)
 app.mainloop()
 
