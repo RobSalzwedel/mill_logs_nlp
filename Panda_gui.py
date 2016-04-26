@@ -9,7 +9,9 @@ import ttk
 import Tkinter as tk
 from PIL import Image, ImageTk
 import os
+import pickle
 
+import tkMessageBox
 import json
 import urllib2
 import numpy as np
@@ -20,12 +22,16 @@ style.use("ggplot")
 
 df = pd.read_csv('tkinter_test.csv')
 df['label_status'] = False
-labels = ['state of plant', 'notification', 'mill in service', 'mill shut down', 'oil burners in service',
-          'oil burners shutdown', 'feeder stalled', 'feeder fails to pick up speed',
-          'feeder blocked', 'feeder sheering pin', 'mill reject box burnt', ]
+#TODO Save and load labels, and label status rather than setting to empty
+df['label'] = ''
 
-f = Figure()
-a = f.add_subplot(111)
+#Load the lables dictionary
+try:
+    labels = pickle.load( open( "labels_dict.p", "rb" ) )
+except IOError:   
+    labels = {}
+    pickle.dump(labels, open( "labels_dict.p", "wb" ) )
+
 
 def printstuff(stuff = 'empty test'):
     print stuff
@@ -116,26 +122,54 @@ class TextLabel(tk.Frame):
         
         tk.Frame.__init__(self, parent)
         
-        label = tk.Label(self, text = "Graph Page", font = LARGE_FONT)
-        #label.pack(pady = 10, padx = 10)
         
         #button1 = tk.Button(self, text = "Back to home", 
         #                    command = lambda: controller.show_frame(StartPage))
         #button1.pack()
+        
+        
+        #New frame for all the actions widgets on the right
         frame1 = tk.Frame(self)
         frame1.pack(side='right',fill='y')
         
+        #Create progress bar and progress label
+        self.prog_int = tk.IntVar()
+        self.prog_int.set(float(df['label_status'].sum())/len(df))
+        self.progress_bar = ttk.Progressbar(frame1, orient = 'horizontal', 
+                                            mode = 'determinate', variable = self.prog_int)
+        self.progress_bar.pack(side = 'bottom', fill = 'x')
+        
+        self.prog_var = tk.StringVar()
+        self.prog_var.set("Progress: %d/%d"% (df['label_status'].sum(), len(df)))
+        self.progress_label = tk.Label(frame1, textvariable =self.prog_var , font = LARGE_FONT)
+        self.progress_label.pack(side = 'bottom', pady = 10, padx = 10)
+        
+        
+        #Entry for new labels        
+        # use entry widget to display/edit selection
+        self.entr_labels = tk.Entry(frame1, width=40)
+        self.entr_labels.insert(0, 'Click on an item in the listbox')
+        self.entr_labels.pack(side = 'top')
+        # pressing the return key will update edited line
+        self.entr_labels.bind('<Return>', self.add_label)
+        # or double click left mouse button to update line
+        #entr_labels.bind('<Double-1>')
+        
+        
+        #Create listbox with labels 
         self.lb_labels = tk.Listbox(frame1, width = 40, height = 20, selectmode = 'multiple',
                                     bd = 0)
         self.lb_labels.pack(side='top',fill='x')
         for label in labels:
             self.lb_labels.insert(tk.END, label)
+            
+            
         
         button1= tk.Button(frame1, text = "Label", 
                             command = self.label)
         button1.pack(side='top', fill='x')
-        button2= tk.Button(frame1, text = "test", 
-                            command = self.test)
+        button2= tk.Button(frame1, text = "Select all", 
+                            command = self.select_all)
         button2.pack(side='top', fill='x')
         self.sb_cluster = tk.Spinbox(frame1, from_ = 0, to = 100, command = self.refresh_display)
         self.sb_cluster.pack(side = 'top')
@@ -153,20 +187,58 @@ class TextLabel(tk.Frame):
         self.display()
        
     def label (self):
-        '''Labels the selected items and updates the display.'''
+        '''Labels the selected items and updates the display, the progress label
+        variable and the progress bar variable'''
+        selected_keys = [self.lb_labels.get(idx) for idx in self.lb_labels.curselection()]
+        label_class = [labels[key] for key in selected_keys]
+        
         for key in self.var:
             print self.var[key].get()
             if self.var[key].get():
                 df['label_status'][key] = True
-
+                df['label'][key] = ' '.join(label_class)
         print '-----'
         print df
         self.refresh_display()
-    
+        
+        #Update progress bar variables
+        self.prog_var.set("Progress: %d/%d"% (df['label_status'].sum(), len(df)))
+        self.prog_int.set(float(df['label_status'].sum())/len(df)*100)
+ 
+    def add_label(self, event):
+        ''''Adds a label from the entry box to the listbox and the labels dictionary'''
+        
 
+        
+        #TODO: Check if the list box is empty
+        
+        #TODO: Check if the label already exists
+        
+        #TODO: Add the label to the list box
+        
+        #TODO: Add the label to the
+        
+        if self.entr_labels.get() not in labels.keys():
+            self.lb_labels.insert(tk.END, self.entr_labels.get())
+            labels[self.entr_labels.get()] = ' c%d'%len(labels)
+            
+        else:
+            #print 'This item already exists under label ' + labels[self.entr_labels.get()]
+            tkMessageBox.showinfo("Warning", 'This item already exists under label ' + labels[self.entr_labels.get()])
+
+        print labels
+        
+        
+        
+        
+        
+        
+        
     def display(self):
         '''Displays the unlabeled data matching the cluster selected in the spin
         box as a scrollable list of checkboxes'''
+        
+        self.progress_bar.value = float(df['label_status'].sum())/len(df)
         self.vsb = tk.Scrollbar(self, orient = "vertical")
         self.text = tk.Text(self, width = 40, height = 20, bd = 0,  
                             yscrollcommand=self.vsb.set, state='disabled')
@@ -185,7 +257,7 @@ class TextLabel(tk.Frame):
                     self.var[i].labelled = False
                     self.cb[i] = tk.Checkbutton(self, text = str(df['data'][i]), 
                                          justify = tk.LEFT, variable = self.var[i],
-                                         wraplength = 800, width = 100)
+                                         wraplength = 1000, width = 120, activebackground = 'red')
                     self.text.window_create("end", window = self.cb[i])            
                     self.text.insert("end", "\n") # to force one checkbox per line
     
@@ -200,9 +272,18 @@ class TextLabel(tk.Frame):
    
     def test(self):
         print type(self.sb_cluster.get())
+        print float(df['label_status'].sum())/len(df)
+        print df['label_status'].sum()
+        self.progress_bar
+        self.prog_int.set(50)
+        
+    def select_all(self):
+        for key in self.var:
+            self.var[key].set(1)
 
+            
 app = Spookfish()
-app.geometry("1440x900")
+app.geometry("1440x850")
 #ani = animation.FuncAnimation(f, animate, interval = 5000)
 app.mainloop()
 
