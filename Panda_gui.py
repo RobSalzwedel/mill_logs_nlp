@@ -33,9 +33,6 @@ except IOError:
     pickle.dump(labels, open( "labels_dict.p", "wb" ) )
 
 
-def printstuff(stuff = 'empty test'):
-    print stuff
-
 def animate(i):
     dataLink = 'https://btc-e.com/api/3/trades/btc_usd?limit=2000'
     data = urllib2.urlopen(dataLink).read()
@@ -148,7 +145,7 @@ class TextLabel(tk.Frame):
         #Entry for new labels        
         # use entry widget to display/edit selection
         self.entr_labels = tk.Entry(frame1, width=40)
-        self.entr_labels.insert(0, 'Click on an item in the listbox')
+        self.entr_labels.insert(0, '')
         self.entr_labels.pack(side = 'top')
         # pressing the return key will update edited line
         self.entr_labels.bind('<Return>', self.add_label)
@@ -189,50 +186,45 @@ class TextLabel(tk.Frame):
     def label (self):
         '''Labels the selected items and updates the display, the progress label
         variable and the progress bar variable'''
-        selected_keys = [self.lb_labels.get(idx) for idx in self.lb_labels.curselection()]
-        label_class = [labels[key] for key in selected_keys]
         
-        for key in self.var:
-            print self.var[key].get()
-            if self.var[key].get():
-                df['label_status'][key] = True
-                df['label'][key] = ' '.join(label_class)
-        print '-----'
-        print df
-        self.refresh_display()
-        
-        #Update progress bar variables
-        self.prog_var.set("Progress: %d/%d"% (df['label_status'].sum(), len(df)))
-        self.prog_int.set(float(df['label_status'].sum())/len(df)*100)
+        #Ensure that a label is selected
+        if self.lb_labels.curselection() == ():
+            tkMessageBox.showinfo("Warning", 'No labels selected!' )
+        else:
+            
+            #Find the selected labels and get the corresponding 'c*' tag
+            selected_keys = [self.lb_labels.get(idx) for idx in self.lb_labels.curselection()]
+            label_class = [labels[key] for key in selected_keys]
+            
+            #Update data frame with labels 'c%' tag and boolean labelled == True
+            for key in self.var:
+                print self.var[key].get()
+                if self.var[key].get():
+                    df['label_status'][key] = True
+                    df['label'][key] = ' '.join(label_class)
+            self.lb_labels.selection_clear(0, tk.END)     
+            self.refresh_display()
+            
+            #Update progress bar variables
+            self.prog_var.set("Progress: %d/%d"% (df['label_status'].sum(), len(df)))
+            self.prog_int.set(float(df['label_status'].sum())/len(df)*100)
+            print df
  
     def add_label(self, event):
         ''''Adds a label from the entry box to the listbox and the labels dictionary'''
-        
-
-        
-        #TODO: Check if the list box is empty
-        
-        #TODO: Check if the label already exists
-        
-        #TODO: Add the label to the list box
-        
-        #TODO: Add the label to the
-        
-        if self.entr_labels.get() not in labels.keys():
+        if self.entr_labels.get() not in labels.keys() and self.entr_labels.get() != '':
             self.lb_labels.insert(tk.END, self.entr_labels.get())
             labels[self.entr_labels.get()] = ' c%d'%len(labels)
-            
+            pickle.dump(labels, open( "labels_dict.p", "wb" ) )
+            self.entr_labels.delete(0, tk.END) 
+        elif self.entr_labels.get()  == '':
+            tkMessageBox.showinfo("Warning", 'Label blank!')
         else:
             #print 'This item already exists under label ' + labels[self.entr_labels.get()]
-            tkMessageBox.showinfo("Warning", 'This item already exists under label ' + labels[self.entr_labels.get()])
-
-        print labels
-        
-        
-        
-        
-        
-        
+            tkMessageBox.showinfo("Warning", 'This item already exists under label ' 
+            + labels[self.entr_labels.get()])
+            self.entr_labels.delete(0, tk.END) 
+                     
         
     def display(self):
         '''Displays the unlabeled data matching the cluster selected in the spin
