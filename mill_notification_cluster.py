@@ -5,9 +5,9 @@ Created on Wed Feb 24 08:57:41 2016
 @author: robsalz
 """
 #Encoding issue workaround
-#import sys
-# reload(sys)  # to enable `setdefaultencoding` again
-#sys.setdefaultencoding("UTF-8")
+import sys
+reload(sys)  # to enable `setdefaultencoding` again
+sys.setdefaultencoding("UTF-8")
 #sys.getdefaultencoding()
 import numpy as np
 import pandas as pd
@@ -113,7 +113,12 @@ joblib.dump(km,  'doc_cluster.pkl')
 km = joblib.load('doc_cluster.pkl')
 clusters = km.labels_.tolist()
 
+cluster_list = []
+for i in xrange (num_clusters):
+    cluster_list.append([])
 
+for idx, cluster in enumerate(clusters):
+    cluster_list[cluster].append(notifications[idx])
 '''import os  # for os.path.basename
 
 import matplotlib.pyplot as plt
