@@ -5,7 +5,7 @@ import math
 import random
 import collections
 import sys
-
+import nltk
 
 import numpy as np
 import tensorflow as tf
@@ -30,19 +30,35 @@ data = data[unit_indices['01']:unit_indices['1 & 2']]
 # Create a list of logs
 logs = data['description']
 
+
+
+
 del data         #Save memory
+
+
+
 
 
 #Tokenize, remove numbers, punctuation, and split string into a list of words
 #NB excludes alphanum eg. 2A and '1A is kept as a word
 #TODO: Remove all numbers and punctuation from alphanums
+#def tokenize_only(text):
+#    from nltk import RegexpTokenizer
+#    #Tokenize using a regular expression,
+#    #We use consecutive letters (exclude punction and numbers)
+#    tokenizer = RegexpTokenizer(r"""([A-Za-z]+[/|-|\][A-Za-z]+|[A-Za-z]+)""")
+#    tokens = [word.lower() for word in tokenizer.tokenize(text)]
+#    return tokens
+
 def tokenize_only(text):
-    from nltk import RegexpTokenizer
-    #Tokenize using a regular expression,
-    #We use consecutive letters (exclude punction and numbers)
-    tokenizer = RegexpTokenizer(r"""([A-Za-z]+[/|-|\][A-Za-z]+|[A-Za-z]+)""")
-    tokens = [word.lower() for word in tokenizer.tokenize(text)]
-    return tokens
+    # first tokenize by sentence, then by word to ensure that punctuation is caught as it's own token
+    tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
+    filtered_tokens = []
+    # filter out any tokens not containing letters (e.g., numeric tokens, raw punctuation)
+    for token in tokens:
+        if re.search('[a-zA-Z]', token):
+            filtered_tokens.append(token)
+    return filtered_tokens
 
 # Loop through log strings, convert to list of words (log_i_words)
 # Extend the words list
@@ -125,7 +141,7 @@ for i in range(8):
 
 batch_size = 128
 embedding_size = 128  # Dimension of the embedding vector.
-skip_window = 1       # How many words to consider left and right.
+skip_window = 4       # How many words to consider left and right.
 num_skips = 2         # How many times to reuse an input to generate a label.
 
 # We pick a random validation set to sample nearest neighbors. Here we limit the
@@ -177,7 +193,7 @@ with graph.as_default():
   valid_embeddings, normalized_embeddings, transpose_b=True)
 
 # Step 5: Begin training.
-num_steps = 200001
+num_steps = 6001
 
 with tf.Session(graph=graph) as session:
   # We must initialize all variables before we use them.
@@ -224,35 +240,35 @@ with tf.Session(graph=graph) as session:
 # TODO: Cluster the words, and print out word clusters
 # can think about using cosine distance
 # Plot with labels
-#def plot_with_labels(low_dim_embs, labels, filename='tsne.png'):
-#  assert low_dim_embs.shape[0] >= len(labels), "More labels than embeddings"
-#  plt.figure(figsize=(18, 18))  #in inches
-#  for i, label in enumerate(labels):
-#    x, y = low_dim_embs[i,:]
-#    plt.scatter(x, y)
-#    plt.annotate(label,
-#                 xy=(x, y),
-#                 xytext=(5, 2),
-#                 textcoords='offset points',
-#                 ha='right',
-#                 va='bottom')
-#
-#  plt.savefig(filename)
-#
-##Method ensures dependancies are available
-#try:
-#  from sklearn.manifold import TSNE
-#  import matplotlib.pyplot as plt
-#
-#  tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
-#  plot_only = 500
-#  low_dim_embs = tsne.fit_transform(final_embeddings[:plot_only,:])
-#  labels = [reverse_dictionary[i] for i in xrange(plot_only)]
-#  plot_with_labels(low_dim_embs, labels)
-#
-#except ImportError:
-#  print("Please install sklearn and matplotlib to visualize embeddings.")
-#
+def plot_with_labels(low_dim_embs, labels, filename='tsne_logs.eps'):
+  assert low_dim_embs.shape[0] >= len(labels), "More labels than embeddings"
+  plt.figure(figsize=(18, 18))  #in inches
+  for i, label in enumerate(labels):
+    x, y = low_dim_embs[i,:]
+    plt.scatter(x, y)
+    plt.annotate(label,
+                 xy=(x, y),
+                 xytext=(5, 2),
+                 textcoords='offset points',
+                 ha='right',
+                 va='bottom')
+
+  plt.savefig(filename, format='eps')
+
+#Method ensures dependancies are available
+try:
+  from sklearn.manifold import TSNE
+  import matplotlib.pyplot as plt
+
+  tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
+  plot_only = 500
+  low_dim_embs = tsne.fit_transform(final_embeddings[:plot_only,:])
+  labels = [reverse_dictionary[i] for i in xrange(plot_only)]
+  plot_with_labels(low_dim_embs, labels)
+
+except ImportError:
+  print("Please install sklearn and matplotlib to visualize embeddings.")
+
 ## Step 7: Save to file
 #save = True
 #if save:
@@ -277,50 +293,82 @@ for idx, tokenized_log in enumerate(tokenized_logs):
     embedded_log_vecs.append(np.sum(np.stack(embedded_log,axis=0),axis=0))
 
 embsum_matrix = np.stack(embedded_log_vecs)
-7
+
 # Step 8: Clustter the logs based on the feauture array built from word embeddings
 from sklearn.cluster import KMeans
-
 num_clusters = 1000
 
-km = KMeans(n_clusters=num_clusters,verbose=True)
-
+km = KMeans(n_clusters = num_clusters, verbose = True)
 km.fit(embsum_matrix)
 
 clusters = km.labels_.tolist()
 
 #Create a list of descriptions grouped by cluster
 cluster_list = []
-for i in xrange (1000):
+for i in xrange (num_clusters):
     cluster_list.append([])
 
 for idx, cluster in enumerate(clusters):
     cluster_list[cluster].append(logs[idx+12813])
 
 
-import numpy as np
+#Export latest cluster to csv
+#################################
+#clusters_df = pd.DataFrame(logs)
+#clusters_df['cluster'] = clusters
+#clusters_df.to_csv('clusters_df.csv')
+#################################
+#import numpy as np
+#
+#from sklearn.cluster import DBSCAN
+#from sklearn import metrics
+#from sklearn.datasets.samples_generator import make_blobs
+#from sklearn.preprocessing import StandardScaler
+#
+## Compute DBSCAN
+#db = DBSCAN(eps=0.3, min_samples=10).fit(embsum_matrix)
+#core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+#core_samples_mask[db.core_sample_indices_] = True
+#labels = db.labels_
+#
+## Number of clusters in labels, ignoring noise if present.
+#n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+#
+#print('Estimated number of clusters: %d' % n_clusters_)
+#print("Homogeneity: %0.3f" % metrics.homogeneity_score(labels_true, labels))
+#print("Completeness: %0.3f" % metrics.completeness_score(labels_true, labels))
+#print("V-measure: %0.3f" % metrics.v_measure_score(labels_true, labels))
+#print("Adjusted Rand Index: %0.3f"
+#      % metrics.adjusted_rand_score(labels_true, labels))
+#print("Adjusted Mutual Information: %0.3f"
+#      % metrics.adjusted_mutual_info_score(labels_true, labels))
+#print("Silhouette Coefficient: %0.3f"
+#      % metrics.silhouette_score(X, labels))
 
-from sklearn.cluster import DBSCAN
-from sklearn import metrics
-from sklearn.datasets.samples_generator import make_blobs
-from sklearn.preprocessing import StandardScaler
+### Use Regex to create clusters
 
-# Compute DBSCAN
-db = DBSCAN(eps=0.3, min_samples=10).fit(embsum_matrix)
-core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
-core_samples_mask[db.core_sample_indices_] = True
-labels = db.labels_
-
-# Number of clusters in labels, ignoring noise if present.
-n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-
-print('Estimated number of clusters: %d' % n_clusters_)
-print("Homogeneity: %0.3f" % metrics.homogeneity_score(labels_true, labels))
-print("Completeness: %0.3f" % metrics.completeness_score(labels_true, labels))
-print("V-measure: %0.3f" % metrics.v_measure_score(labels_true, labels))
-print("Adjusted Rand Index: %0.3f"
-      % metrics.adjusted_rand_score(labels_true, labels))
-print("Adjusted Mutual Information: %0.3f"
-      % metrics.adjusted_mutual_info_score(labels_true, labels))
-print("Silhouette Coefficient: %0.3f"
-      % metrics.silhouette_score(X, labels))
+# Oil Burners in service 1000
+pattern = 'oil burners'
+pattern2 = 'shut down|shutdown'
+a = []
+for i in logs:
+    match1 = re.search(pattern,i)
+    match2 = re.search(pattern2,i)
+    if match1 and match2:
+        a.append(i)
+  
+# Mill X in service      
+pattern = '(?=mill\s+(\w+|"\w+")\s+(in\s+service|i/s))'
+a = []
+for i in logs:
+    match1 = re.search(pattern,i)
+    if match1:
+        a.append(i)
+        
+# Mill X in shutdown      
+pattern = '(?=mill\s+(\w+|"\w+")\s+(shut\s+down|shutdown|s/d))'
+a = []
+for i in logs:
+    match1 = re.search(pattern,i)
+    if match1:
+        a.append(i)
