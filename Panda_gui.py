@@ -20,17 +20,27 @@ import pandas as pd
 LARGE_FONT = ("Verdanna",12)
 style.use("ggplot")
 
-df = pd.read_csv('tkinter_test.csv')
-df['label_status'] = False
-#TODO Save and load labels, and label status rather than setting to empty
-df['label'] = ''
+try:
+    clusters_df = pd.read_csv('clusters_not_df.csv', index_col = 0)
+except IOError:
+    print 'There the data csv is not specified'
+    quit
+
+try:
+    labels_df = pd.read_csv('label_df.csv', index_col = 0)
+    df = pd.concat([clusters_df, labels_df], axis=1, join_axes=[clusters_df.index])
+except IOError:
+    df = clusters_df
+    del(clusters_df)
+    df['label_status'] = False
+    df['label'] = ' '
 
 #Load the lables dictionary
 try:
-    labels = pickle.load( open( "labels_dict.p", "rb" ) )
+    labels = pickle.load( open( "labels_dict_not.p", "rb" ) )
 except IOError:   
     labels = {}
-    pickle.dump(labels, open( "labels_dict.p", "wb" ) )
+    pickle.dump(labels, open( "labels_dict_not.p", "wb" ) )
 
 
 def animate(i):
@@ -168,7 +178,7 @@ class TextLabel(tk.Frame):
         button2= tk.Button(frame1, text = "Select all", 
                             command = self.select_all)
         button2.pack(side='top', fill='x')
-        self.sb_cluster = tk.Spinbox(frame1, from_ = 0, to = 100, command = self.refresh_display)
+        self.sb_cluster = tk.Spinbox(frame1, from_ = 0, to = 1000, command = self.refresh_display)
         self.sb_cluster.pack(side = 'top')
 
         #Adding matplot lib to tkinter window 
@@ -201,21 +211,23 @@ class TextLabel(tk.Frame):
                 print self.var[key].get()
                 if self.var[key].get():
                     df['label_status'][key] = True
-                    df['label'][key] = ' '.join(label_class)
+                    df['label'][key] = ''.join(label_class)
             self.lb_labels.selection_clear(0, tk.END)     
             self.refresh_display()
             
             #Update progress bar variables
             self.prog_var.set("Progress: %d/%d"% (df['label_status'].sum(), len(df)))
             self.prog_int.set(float(df['label_status'].sum())/len(df)*100)
-            print df
+            
+            # Update and save labels dataframe
+            df.to_csv('labels_not_df.csv', columns = ['label', 'label_status'])
  
     def add_label(self, event):
         ''''Adds a label from the entry box to the listbox and the labels dictionary'''
         if self.entr_labels.get() not in labels.keys() and self.entr_labels.get() != '':
             self.lb_labels.insert(tk.END, self.entr_labels.get())
             labels[self.entr_labels.get()] = ' c%d'%len(labels)
-            pickle.dump(labels, open( "labels_dict.p", "wb" ) )
+            pickle.dump(labels, open( "labels_dict_not.p", "wb" ) )
             self.entr_labels.delete(0, tk.END) 
         elif self.entr_labels.get()  == '':
             tkMessageBox.showinfo("Warning", 'Label blank!')
@@ -247,7 +259,7 @@ class TextLabel(tk.Frame):
                 if not df['label_status'][i]:
                     self.var[i] = tk.IntVar()
                     self.var[i].labelled = False
-                    self.cb[i] = tk.Checkbutton(self, text = str(df['data'][i]), 
+                    self.cb[i] = tk.Checkbutton(self, text = str(df['Title'][i]), 
                                          justify = tk.LEFT, variable = self.var[i],
                                          wraplength = 1000, width = 120, activebackground = 'red')
                     self.text.window_create("end", window = self.cb[i])            
