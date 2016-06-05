@@ -179,17 +179,12 @@ class TextLabel(tk.Frame):
         button2.pack(side='top', fill='x')
         self.sb_cluster = tk.Spinbox(frame1, from_ = 0, to = 1000, command = self.refresh_display)
         self.sb_cluster.pack(side = 'top')
-
-        #Adding matplot lib to tkinter window 
-        #canvas = FigureCanvasTkAgg(f, self)
-        #canvas.show()
-        #canvas.get_tk_widget().pack(side = tk.TOP, fill = tk.BOTH, expand = True)        
         
-        #Adding matplotlib navigation bar
-        #toolbar = NavigationToolbar2TkAgg(canvas, self)
-        #toolbar.update()
-        #canvas._tkcanvas.pack(side = tk.TOP, fill = tk.BOTH, expand = True)
-
+        #Including the search box
+        self.search_var = StringVar()
+        self.search_var.trace("w", lambda name, index, mode: self.refresh_display())
+        self.entry = Entry(self, textvariable=self.search_var, width=13)
+        self.entry.pack(side = 'top')
         self.display()
        
     def label (self):
@@ -248,13 +243,13 @@ class TextLabel(tk.Frame):
         self.vsb.config(command = self.text.yview)
         self.vsb.pack(side = "right", fill = "y")
         self.text.pack(side = "left", fill = "both", expand = True)
-        
+        #search_term = self.search_var.get()
         # Dictionaries of checkboxes (cb), & checkbox_status (var), 
         #key = df.index, value = df['data'][index] if not labeled
         self.cb = {}
         self.var = {}
         for i in df.index:
-            if int(self.sb_cluster.get()) == int(df['cluster'][i]):
+            if int(self.sb_cluster.get()) == int(df['cluster'][i]) and self.search_var.get().lower() in df['Title'][i]:
                 if not df['label_status'][i]:
                     self.var[i] = tk.IntVar()
                     self.var[i].labelled = False
@@ -283,7 +278,19 @@ class TextLabel(tk.Frame):
     def select_all(self):
         for key in self.var:
             self.var[key].set(1)
+            
+    def update_list(self):
+        search_term = self.search_var.get()
 
+        # Just a generic list to populate the listbox
+        lbox_list = ['Adam', 'Lucy', 'Barry', 'Bob',
+        'James', 'Frank', 'Susan', 'Amanda', 'Christie']
+
+        self.lbox.delete(0, END)
+
+        for item in lbox_list:
+            if search_term.lower() in item.lower():
+                self.lbox.insert(END, item)    
             
 app = Spookfish()
 app.geometry("1440x850")
