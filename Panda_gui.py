@@ -27,7 +27,7 @@ except IOError:
     quit
 
 try:
-    labels_df = pd.read_csv('label_df.csv', index_col = 0)
+    labels_df = pd.read_csv('labels_not_df_all.csv', index_col = 0)
     df = pd.concat([clusters_df, labels_df], axis=1, join_axes=[clusters_df.index])
 except IOError:
     df = clusters_df
@@ -37,10 +37,10 @@ except IOError:
 
 #Load the lables dictionary
 try:
-    labels = pickle.load( open( "labels_dict_not.p", "rb" ) )
+    labels = pickle.load( open( "all_labels.p", "rb" ) )
 except IOError:   
     labels = {}
-    pickle.dump(labels, open( "labels_dict_not.p", "wb" ) )
+    pickle.dump(labels, open( "all_labels.p", "wb" ) )
 
 
 def animate(i):
@@ -167,10 +167,9 @@ class TextLabel(tk.Frame):
         self.lb_labels = tk.Listbox(frame1, width = 40, height = 20, selectmode = 'multiple',
                                     bd = 0)
         self.lb_labels.pack(side='top',fill='x')
-        for label in labels:
+        for label in sorted(labels):
             self.lb_labels.insert(tk.END, label)
-            
-            
+                
         
         button1= tk.Button(frame1, text = "Label", 
                             command = self.label)
@@ -220,14 +219,14 @@ class TextLabel(tk.Frame):
             self.prog_int.set(float(df['label_status'].sum())/len(df)*100)
             
             # Update and save labels dataframe
-            df.to_csv('labels_not_df.csv', columns = ['label', 'label_status'])
+            df.to_csv('labels_not_df_all.csv', columns = ['label', 'label_status'])
  
     def add_label(self, event):
         ''''Adds a label from the entry box to the listbox and the labels dictionary'''
         if self.entr_labels.get() not in labels.keys() and self.entr_labels.get() != '':
             self.lb_labels.insert(tk.END, self.entr_labels.get())
             labels[self.entr_labels.get()] = ' c%d'%len(labels)
-            pickle.dump(labels, open( "labels_dict_not.p", "wb" ) )
+            pickle.dump(labels, open( "all_labels.p", "wb" ) )
             self.entr_labels.delete(0, tk.END) 
         elif self.entr_labels.get()  == '':
             tkMessageBox.showinfo("Warning", 'Label blank!')
