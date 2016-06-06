@@ -4,12 +4,14 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from matplotlib.figure import Figure
 import matplotlib.animation as animation
 from matplotlib import style
+from fuzzywuzzy import fuzz
 import matplotlib.pyplot as plt
 import ttk
 import Tkinter as tk
 from PIL import Image, ImageTk
 import os
 import pickle
+
 
 import tkMessageBox
 import json
@@ -181,10 +183,10 @@ class TextLabel(tk.Frame):
         self.sb_cluster.pack(side = 'top')
         
         #Including the search box
-        self.search_var = StringVar()
+        self.search_var = tk.StringVar()
         self.search_var.trace("w", lambda name, index, mode: self.refresh_display())
-        self.entry = Entry(self, textvariable=self.search_var, width=13)
-        self.entry.pack(side = 'top')
+        self.entry = tk.Entry(self, textvariable=self.search_var)
+        self.entry.pack(side = 'top',fill='x')
         self.display()
        
     def label (self):
@@ -249,7 +251,7 @@ class TextLabel(tk.Frame):
         self.cb = {}
         self.var = {}
         for i in df.index:
-            if int(self.sb_cluster.get()) == int(df['cluster'][i]) and self.search_var.get().lower() in df['Title'][i]:
+            if int(self.sb_cluster.get()) == int(df['cluster'][i]) and (self.search_var.get().lower()=='' or fuzz.token_set_ratio(self.search_var.get().lower(),df['Title'][i])>90):
                 if not df['label_status'][i]:
                     self.var[i] = tk.IntVar()
                     self.var[i].labelled = False
@@ -258,7 +260,7 @@ class TextLabel(tk.Frame):
                                          wraplength = 1000, width = 120, activebackground = 'red')
                     self.text.window_create("end", window = self.cb[i])            
                     self.text.insert("end", "\n") # to force one checkbox per line
-    
+
     def delete_display(self):
         '''Deletes the text display'''
         self.text.destroy()
