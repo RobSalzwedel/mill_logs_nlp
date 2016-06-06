@@ -147,11 +147,17 @@ class TextLabel(tk.Frame):
         self.progress_bar = ttk.Progressbar(frame1, orient = 'horizontal', 
                                             mode = 'determinate', variable = self.prog_int)
         self.progress_bar.pack(side = 'bottom', fill = 'x')
+                
         
         self.prog_var = tk.StringVar()
         self.prog_var.set("Progress: %d/%d"% (df['label_status'].sum(), len(df)))
         self.progress_label = tk.Label(frame1, textvariable =self.prog_var , font = LARGE_FONT)
         self.progress_label.pack(side = 'bottom', pady = 10, padx = 10)
+        
+        #Count the number of items that are in the cluster / search match
+        self.search_count_var = tk.StringVar()
+        self.search_count_label = tk.Label(frame1, textvariable = self.search_count_var , font = LARGE_FONT)
+        self.search_count_label.pack(side = 'bottom', pady = 10, padx = 10)
         
         
         #Entry for new labels        
@@ -250,8 +256,10 @@ class TextLabel(tk.Frame):
         #key = df.index, value = df['data'][index] if not labeled
         self.cb = {}
         self.var = {}
+        count=0;
         for i in df.index:
-            if int(self.sb_cluster.get()) == int(df['cluster'][i]) and (self.search_var.get().lower()=='' or fuzz.token_set_ratio(self.search_var.get().lower(),df['Title'][i])>90):
+            #if (int(self.sb_cluster.get()) == int(df['cluster'][i])) and
+            if (self.search_var.get().lower()=='' or fuzz.token_set_ratio(self.search_var.get().lower(),df['Title'][i])>90):
                 if not df['label_status'][i]:
                     self.var[i] = tk.IntVar()
                     self.var[i].labelled = False
@@ -260,7 +268,8 @@ class TextLabel(tk.Frame):
                                          wraplength = 1000, width = 120, activebackground = 'red')
                     self.text.window_create("end", window = self.cb[i])            
                     self.text.insert("end", "\n") # to force one checkbox per line
-
+                    count+=1
+        self.search_count_var.set("Matches: %d"% (count))
     def delete_display(self):
         '''Deletes the text display'''
         self.text.destroy()
