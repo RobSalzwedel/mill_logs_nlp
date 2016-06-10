@@ -26,3 +26,6 @@ try:
     labels = pickle.load( open( "all_labels.p", "rb" ) )
 except IOError:
     print 'data missing'
+
+#Count label occurences 
+label_count = df['label'].value_counts()
