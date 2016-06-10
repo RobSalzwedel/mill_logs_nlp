@@ -6,6 +6,7 @@ Created on Fri Jun 10 13:13:58 2016
 """
 
 #TODO load notifications and labels 
+import numpy as np
 import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
@@ -41,7 +42,7 @@ PF = {}
 Hydraulic = {}
 Lub = {}
 
-#TODO decide if elif is better
+#Create a dictionary for each system
 for l in labels:
     if 'Mill' in l:
         Mill[l]= labels[l]
@@ -55,7 +56,9 @@ for l in labels:
         Hydraulic[l]= labels[l]
     if 'Lub' in l:
         Lub[l]= labels[l]
-        
+
+#Count the labelled occurences for  each system (NB must follow labelling 
+#naming convention)
 count_mill = 0
 count_feeder = 0
 count_reject = 0
@@ -79,3 +82,22 @@ for label in labels_df['label']:
         count_pa+=1
     if sum(l in label for l in PA.values()):
         count_pf+=1
+        
+#TODO: create a bar graph overview for each system
+#TODO: create a bar graph of failures in each system
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_xticks(ind + width/2)
+ax.set_xticklabels(('Mill', 'Feeder', 'Reject', 'Lub','Hydr','PA','PF'))
+count_all = [count_mill, count_feeder, count_reject, count_lub, count_hydraulic,count_pa,count_pf]
+N = len(count_all)
+
+## necessary variables
+ind = np.arange(N)                # the x locations for the groups
+width = .7                      # the width of the bars
+
+## the bars
+rects1 = ax.bar(ind, count_all, width,
+                error_kw=dict(elinewidth=2,ecolor='blue'))
+plt.style.use('seaborn-bright')
+
