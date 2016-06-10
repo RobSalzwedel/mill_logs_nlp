@@ -32,6 +32,10 @@ except IOError:
 #Count label occurences 
 label_count = df['label'].value_counts()
 
+
+#TODO create a list of labels and counts
+
+
 #Split the dictionary into sub dict based on the system 
 #System dictionaries
 Mill = {}
@@ -42,7 +46,8 @@ PF = {}
 Hydraulic = {}
 Lub = {}
 
-#Create a dictionary for each system
+
+#Create a dictionary for each system label name : label
 for l in labels:
     if 'Mill' in l:
         Mill[l]= labels[l]
@@ -57,6 +62,8 @@ for l in labels:
     if 'Lub' in l:
         Lub[l]= labels[l]
 
+
+
 #Count the labelled occurences for  each system (NB must follow labelling 
 #naming convention)
 count_mill = 0
@@ -70,6 +77,7 @@ count_pf = 0
 for label in labels_df['label']:
     if sum(l in label for l in Mill.values()):
         count_mill+=1
+        
     if sum(l in label for l in Feeder.values()):
         count_feeder+=1
     if sum(l in label for l in Reject.values()):
@@ -82,6 +90,7 @@ for label in labels_df['label']:
         count_pa+=1
     if sum(l in label for l in PA.values()):
         count_pf+=1
+        
         
 #TODO: create a bar graph overview for each system
 #TODO: create a bar graph of failures in each system
@@ -101,3 +110,12 @@ rects1 = ax.bar(ind, count_all, width,
                 error_kw=dict(elinewidth=2,ecolor='blue'))
 plt.style.use('seaborn-bright')
 
+
+label_count_dict = dict(label_count)
+
+Mill2 = {}
+#Create dictionary with label name : count
+for lc in label_count_dict:
+    for m in Mill:
+        if lc == Mill[m]:
+            Mill2[m]=lc[lc]
