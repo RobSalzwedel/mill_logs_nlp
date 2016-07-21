@@ -1,494 +1,822 @@
 (dp0
-S'Feeder full of coal'
+S'Lub oil filter leaking oil'
 p1
-S' c117'
+S' c160'
 p2
-sS'Secondary air damper indication fault'
+sS'PA damper spindle loose in the blade'
 p3
-S' c53'
+S' c197'
 p4
-sS'Feeder stalled'
-p5
-S' c118'
-p6
 sS'Raw coal pipe leaking'
-p7
+p5
 S' c21'
+p6
+sS'Secondary air damper indication fault'
+p7
+S' c53'
 p8
-sS'Reject ject pulsion pump valve stiff'
+sS'Mill load lines require new tapping points '
 p9
-S' c75'
+S' c201'
 p10
-sS'Lub oil filter change over v/v leaking oil'
+sS'Feeder stalled'
 p11
-S' c63'
+S' c118'
 p12
-sS'Seal air fan bearing damaged'
+sS'PF leak - Mill boot seal'
 p13
-S' c70'
+S' c190'
 p14
-sS'Seal air diff pressure low alarm sustained'
+sS'Secondary air load lines to be checked'
 p15
-S' c69'
+S' c200'
 p16
-sS'Quick close damper not driving'
+sS'Feeder full of coal'
 p17
-S' c38'
+S' c117'
 p18
-sS'Reject box inspection glass damaged'
+sS'Reject ject pulsion pump valve stiff'
 p19
-S' c26'
+S' c75'
 p20
-sS'Reject box gratings damaged'
+sS'Lub oil filter change over v/v leaking oil'
 p21
-S' c8'
+S' c63'
 p22
-sS'Feeder blocked'
+sS'Seal air fan bearing damaged'
 p23
-S' c54'
+S' c70'
 p24
-sS'Reject box inner door fails to seal'
+sS'Feeder speed fluctuating '
 p25
-S' c57'
+S' c157'
 p26
-sS'Mill motor nde brg temp indication faulty'
+sS'Seal air diff pressure low alarm sustained'
 p27
-S' c112'
+S' c69'
 p28
-sS'Reject jet pulsion v/v passing'
+sS'Quick close damper not driving'
 p29
-S' c18'
+S' c38'
 p30
-sS'Mill motor nde bearing oil level low'
+sS'Hydraulic oil leak'
 p31
-S' c48'
+S' c127'
 p32
-sS'Mill gearbox lub oil level low'
+sS'Reject box inspection glass damaged'
 p33
-S' c6'
+S' c26'
 p34
-sS'Reject box inner door handle turning loose'
+sS'Reject box gratings damaged'
 p35
-S' c58'
+S' c8'
 p36
-sS'Reject line holed'
+sS'Feeder blocked'
 p37
-S' c2'
+S' c54'
 p38
-sS'PA flow fluctuating '
+sS'Reject box inner door fails to seal'
 p39
-S' c62'
+S' c57'
 p40
-sS'Mill start up program stuck'
+sS'Hydraulic oil temperature high'
 p41
-S' c15'
+S' c129'
 p42
-sS'Mill motor de bearing oil level low'
+sS'Lub oil cooling water flow meter dirty'
 p43
-S' c47'
+S' c165'
 p44
-sS'Feeder clean out conveyor shearing pin broken'
+sS'Mill motor nde brg temp indication faulty'
 p45
-S' c61'
+S' c112'
 p46
-sS'Roller leaking pf'
+sS'Reject jet pulsion v/v passing'
 p47
-S' c36'
+S' c18'
 p48
-sS'Feeder belt damaged'
+sS'Mill motor nde bearing oil level low'
 p49
-S' c34'
+S' c48'
 p50
-sS'Feeder speed to be calibrated per load line'
+sS'PA flow low with damper open'
 p51
-S' c33'
+S' c152'
 p52
-sS'PF leak - Classifier outlet '
+sS'Mill gearbox lub oil level low'
 p53
-S' c96'
+S' c6'
 p54
-sS'Feeder has a stone inside'
+sS'Reject box inner door handle turning loose'
 p55
-S' c89'
+S' c58'
 p56
-sS'Reject box leaking water'
+sS'Mill roller seal air diff pressure fault'
 p57
-S' c100'
+S' c176'
 p58
-sS'Feeder fails to start'
+sS'PA flow fluctuating '
 p59
-S' c16'
+S' c62'
 p60
-sS'Feeder VSD fault'
+sS'Mill start up program stuck'
 p61
-S' c12'
+S' c15'
 p62
-sS'Feeder speed fails to pick up'
+sS'Mill motor de bearing oil level low'
 p63
-S' c17'
+S' c47'
 p64
-sS'Feeder blocked alarm sustained'
+sS'Feeder clean out conveyor shearing pin broken'
 p65
-S' c55'
+S' c61'
 p66
-sS'PA duct leaking air'
+sS'Roller leaking pf'
 p67
-S' c80'
+S' c36'
 p68
-sS'Feeder clean out conveyor alarm sustained'
+sS'Feeder belt damaged'
 p69
-S' c10'
+S' c34'
 p70
-sS'Mill coalgate leaking'
+sS'Feeder speed to be calibrated per load line'
 p71
-S' c67'
+S' c33'
 p72
-sS'Lub oil filters dirty'
+sS'PF leak - Classifier outlet '
 p73
-S' c29'
+S' c96'
 p74
-sS'PF leak - Mill tension ram'
+sS'PA damper actuator fault'
 p75
-S' c92'
+S' c147'
 p76
-sS'Hydraulic oil level low alarm systained'
+sS'Feeder tension pully fault'
 p77
-S' c41'
+S' c189'
 p78
-sS'Reject box inner door fails to close'
+sS'Feeder has a stone inside'
 p79
-S' c51'
+S' c89'
 p80
-sS'Reject box inner door fails to open'
+sS'Hydraulic cooling fan fault'
 p81
-S' c50'
+S' c137'
 p82
-sS'Reject water trenches blocked'
+sS'Reject box leaking water'
 p83
-S' c5'
+S' c100'
 p84
-sS'Mill motor de brg temp high'
-p85
-S' c113'
-p86
-sS'Reject jet pulsion pump pressure low'
-p87
-S' c76'
-p88
-sS'PF leak - Burner supply pipe'
-p89
-S' c95'
-p90
-sS'No coal on belt alarm not working'
-p91
-S' c91'
-p92
-sS'Hydraulic pump damaged'
-p93
-S' c107'
-p94
-sS'Feeder gearbox oil level low'
-p95
-S' c11'
-p96
-sS'Mill coalgate fails to open'
-p97
-S' c64'
-p98
-sS'Feeder clean out conveyor proxy fault'
-p99
-S' c121'
-p100
-sS'Mill motor nde brg temp spiking'
-p101
-S' c110'
-p102
-sS'Feeder speed discrepancy'
-p103
-S' c9'
-p104
-sS'Roller position proxy fault'
-p105
-S' c49'
-p106
-sS'PA damper sticking'
-p107
-S' c109'
-p108
-sS'Mill motor de brg sight glass dirty'
-p109
-S' c102'
-p110
-sS'Scaffolding request'
-p111
-S' c98'
-p112
-sS'Reject line burst'
-p113
-S' c4'
-p114
-sS'Feeder no coal on belt alarm sustained'
-p115
-S' c90'
-p116
-sS'Feeder speed card error'
-p117
-S' c44'
-p118
-sS'Milll motor nde brg sight glass dirty'
-p119
-S' c101'
-p120
-sS'PF leak - Ducting'
-p121
-S' c94'
-p122
-sS'Secondary air damper not controlling on auto'
-p123
-S' c37'
-p124
-sS'Secondary air damper not driving'
-p125
-S' c52'
-p126
-sS'No coal on belt alarm sustained'
-p127
-S' c42'
-p128
-sS'Feeder fault protection not working'
-p129
-S' c45'
-p130
-sS'Reject box holed'
-p131
-S' c46'
-p132
-sS'Raw coal pipe blocked'
-p133
-S' c22'
-p134
-sS'Feeder gearbox leaking oil'
-p135
-S' c120'
-p136
-sS'PA damper keeps tripping'
-p137
-S' c81'
-p138
-sS'Mill start up program faulty'
-p139
-S' c14'
-p140
-sS'PA damper fails to drive'
-p141
-S' c78'
-p142
-sS'Reject line leaking water'
-p143
-S' c19'
-p144
-sS'Mill ribbon damaged'
-p145
-S' c56'
-p146
-sS'Mill coalgate fails to close'
-p147
-S' c65'
-p148
-sS'Reject box burning'
-p149
-S' c31'
-p150
-sS'PA duct compensator torn'
-p151
-S' c85'
-p152
-sS'Reject line leaking'
-p153
-S' c3'
-p154
-sS'Feeder clean out conveyor damaged'
-p155
-S' c72'
-p156
-sS'Hydraulic oil level low'
-p157
-S' c7'
-p158
-sS'Feeder belt misaligned'
-p159
-S' c35'
-p160
-sS'Mill clean air curve to be done'
-p161
-S' c68'
-p162
-sS'PA damper fails to control'
-p163
-S' c83'
-p164
-sS'Roller leaking raw coal'
-p165
-S' c23'
-p166
-sS'PA damper motor fault'
-p167
-S' c79'
-p168
-sS'Mill rejecting excesively'
-p169
-S' c1'
-p170
-sS'PA damper link loose'
-p171
-S' c84'
-p172
-sS'Hydraulic pump keeps tripping'
-p173
-S' c106'
-p174
 sS'PF leak - Outlet duct'
-p175
+p85
 S' c97'
-p176
-sS'Reject box inner door burnt'
-p177
-S' c103'
-p178
-sS'PF leak - Burner box'
-p179
-S' c93'
-p180
-sS'Reject jet pulsion pump leaking water'
-p181
-S' c20'
-p182
-sS'Hydraulic pump fails to start'
-p183
-S' c105'
-p184
-sS'Mill outlet temperature spiking'
-p185
-S' c60'
-p186
+p86
+sS'Feeder clean out conveyor fault'
+p87
+S' c186'
+p88
+sS'Feeder fails to start'
+p89
+S' c16'
+p90
+sS'Hydraulic oil level high alarm sustained'
+p91
+S' c138'
+p92
+sS'PA damper spindle nut needs to be replaced'
+p93
+S' c198'
+p94
+sS'Feeder VSD fault'
+p95
+S' c12'
+p96
+sS'Secondary air flow discrepency'
+p97
+S' c173'
+p98
+sS'Feeder speed fails to pick up'
+p99
+S' c17'
+p100
+sS'Secondary air damper stroke checked'
+p101
+S' c171'
+p102
+sS'Feeder blocked alarm sustained'
+p103
+S' c55'
+p104
+sS'PA duct leaking air'
+p105
+S' c80'
+p106
+sS'PA damper fails to close'
+p107
+S' c195'
+p108
+sS'Hydraulic cylinder not moving'
+p109
+S' c140'
+p110
+sS'Feeder clean out conveyor alarm sustained'
+p111
+S' c10'
+p112
+sS'Mill coalgate leaking'
+p113
+S' c67'
+p114
+sS'Lub oil filters dirty'
+p115
+S' c29'
+p116
+sS'PF leak - Mill tension ram'
+p117
+S' c92'
+p118
+sS'Hydraulic oil level low alarm systained'
+p119
+S' c41'
+p120
+sS'Reject box inner door fails to close'
+p121
+S' c51'
+p122
+sS'Reject box inner door fails to open'
+p123
+S' c50'
+p124
+sS'Feeder drive pulley fault'
+p125
+S' c187'
+p126
+sS'Reject water trenches blocked'
+p127
+S' c5'
+p128
+sS'Mill motor de brg temp high'
+p129
+S' c113'
+p130
+sS'Reject line holed'
+p131
+S' c2'
+p132
+sS'PF leak - Burner supply pipe'
+p133
+S' c95'
+p134
+sS'No coal on belt alarm not working'
+p135
+S' c91'
+p136
+sS'Reject box inspection door seal damaged'
+p137
+S' c154'
+p138
+sS'Hydraulic pump damaged'
+p139
+S' c107'
+p140
 sS'Reject box inner door stuck'
-p187
+p141
 S' c73'
+p142
+sS'Mill coalgate fails to open'
+p143
+S' c64'
+p144
+sS'Feeder clean out conveyor proxy fault'
+p145
+S' c121'
+p146
+sS'Lub oil flow meter dirty'
+p147
+S' c164'
+p148
+sS'Reject lights not working'
+p149
+S' c192'
+p150
+sS'Mill motor nde brg temp spiking'
+p151
+S' c110'
+p152
+sS'PA damper inspection door leaking air'
+p153
+S' c145'
+p154
+sS'Feeder speed discrepancy'
+p155
+S' c9'
+p156
+sS'Tempering air damper fails to drive'
+p157
+S' c177'
+p158
+sS'Roller position proxy fault'
+p159
+S' c49'
+p160
+sS'Hydraulic oil pump coupling sheared'
+p161
+S' c128'
+p162
+sS'Soot blower fault'
+p163
+S' c123'
+p164
+sS'PA duct holed'
+p165
+S' c150'
+p166
+sS'Mill motor de brg sight glass dirty'
+p167
+S' c102'
+p168
+sS'PA damper passing'
+p169
+S' c142'
+p170
+sS'Scaffolding request'
+p171
+S' c98'
+p172
+sS'Station cleaning to remove rejects'
+p173
+S' c193'
+p174
+sS'Tempering air damper mechanically stiff'
+p175
+S' c178'
+p176
+sS'Reject line burst'
+p177
+S' c4'
+p178
+sS'Hydraulic oil leak - Roller'
+p179
+S' c125'
+p180
+sS'Feeder no coal on belt alarm sustained'
+p181
+S' c90'
+p182
+sS'Station cleaning request'
+p183
+S' c155'
+p184
+sS'PA impulse line to be blown through'
+p185
+S' c143'
+p186
+sS'PF leak - Ducting'
+p187
+S' c94'
 p188
-sS'MIll differential pressure high'
+sS'Milll motor nde brg sight glass dirty'
 p189
-S' c27'
+S' c101'
 p190
-sS'Rocker arm leaking pf'
+sS'Feeder speed indication faulty'
 p191
-S' c39'
+S' c158'
 p192
-sS'PA damper fails to control on auto'
+sS'Feeder speed card error'
 p193
-S' c87'
+S' c44'
 p194
-sS'PA damper mechanically stiff'
+sS'Secondary air damper not controlling on auto'
 p195
-S' c82'
+S' c37'
 p196
-sS'Feeder clean out conveyor gearbox oil level low'
+sS'MIll roller limits fault'
 p197
-S' c115'
+S' c175'
 p198
-sS'Raw coal hang up'
+sS'Secondary air damper not driving'
 p199
-S' c25'
+S' c52'
 p200
-sS'Reject box inner door limits to be set'
+sS'Feeder motor fan gaurd missing'
 p201
-S' c77'
+S' c156'
 p202
-sS'Mill VSD fault'
+sS'PA impulse lines loose'
 p203
-S' c13'
+S' c196'
 p204
-sS'PA damper VSD fault'
+sS'Lub oil flow meter is wrong type'
 p205
-S' c88'
+S' c169'
 p206
-sS'Reject line blocked'
+sS'Lub oil filter diff pressure gauge faulty'
 p207
-S' c0'
+S' c159'
 p208
-sS'Reject cylinder damaged'
+sS'Feeder fault protection not working'
 p209
-S' c104'
+S' c45'
 p210
-sS'Seal air fan vibration'
+sS'Reject box holed'
 p211
-S' c24'
+S' c46'
 p212
-sS'PF distribution box leaking pf'
+sS'Hydraulic pump motor fault'
 p213
-S' c32'
+S' c135'
 p214
-sS'PA flow low'
+sS'Raw coal pipe blocked'
 p215
-S' c122'
+S' c22'
 p216
-sS'Reject line damaged'
+sS'Lub oil flow switch discrepency'
 p217
-S' c99'
+S' c167'
 p218
-sS'PA damper to be stroke checked'
+sS'Feeder gearbox leaking oil'
 p219
-S' c86'
+S' c120'
 p220
-sS'Mill motor nde brg temp high'
+sS'PA damper keeps tripping'
 p221
-S' c111'
+S' c81'
 p222
-sS'Mill coalgate stuck'
+sS'PA damper module fault'
 p223
-S' c66'
+S' c194'
 p224
-sS'OIl burner lance fails to ignite'
+sS'Mill start up program faulty'
 p225
-S' c59'
+S' c14'
 p226
-sS'Hydraulic oil pressure low'
+sS'Mill return to service assistance needed'
 p227
-S' c43'
+S' c184'
 p228
-sS'Reject box inner door clinker'
+sS'PA damper fails to drive'
 p229
-S' c30'
+S' c78'
 p230
-sS'Mill motor de brg temp inidication faulty'
+sS'Reject line leaking water'
 p231
-S' c114'
+S' c19'
 p232
-sS'Feeder clean out conveyor gearbox leaking oil'
+sS'Mill ribbon damaged'
 p233
-S' c116'
+S' c56'
 p234
-sS'Reject line pipe disconnected'
+sS'Hydraulic oil leak - Accumulator'
 p235
-S' c74'
+S' c130'
 p236
-sS'PA damper indication faulty'
+sS'Mill coalgate fails to close'
 p237
-S' c108'
+S' c65'
 p238
-sS'Hydraulic oil filters dirty'
+sS'PA damper fails to control on auto'
 p239
-S' c28'
+S' c87'
 p240
-sS'Feeder current reading zero'
+sS'Reject box burning'
 p241
-S' c119'
+S' c31'
 p242
-sS'Rocker arm leaking raw coal'
+sS'PA duct compensator torn'
 p243
-S' c40'
+S' c85'
 p244
-sS'Mill motor fails to start'
+sS'Reject line leaking'
 p245
-S' c71'
+S' c3'
 p246
+sS'Feeder clean out conveyor gearbox leaking oil'
+p247
+S' c116'
+p248
+sS'No coal on belt alarm sustained'
+p249
+S' c42'
+p250
+sS'Hydraulic oil level low'
+p251
+S' c7'
+p252
+sS'Feeder belt misaligned'
+p253
+S' c35'
+p254
+sS'Hydraulic oil pipe burst'
+p255
+S' c132'
+p256
+sS'Mill clean air curve to be done'
+p257
+S' c68'
+p258
+sS'Reject jet pulsion pump pressure low'
+p259
+S' c76'
+p260
+sS'Hydraulic oil leak - cylinder'
+p261
+S' c134'
+p262
+sS'Roller leaking raw coal'
+p263
+S' c23'
+p264
+sS'PA damper motor fault'
+p265
+S' c79'
+p266
+sS'Hydraulic oil leak - Piping'
+p267
+S' c131'
+p268
+sS'Mill rejecting excesively'
+p269
+S' c1'
+p270
+sS'PA damper link loose'
+p271
+S' c84'
+p272
+sS'Lub oil leak - Oil Cooler'
+p273
+S' c163'
+p274
+sS'Lub oil pressure low'
+p275
+S' c168'
+p276
+sS'Hydraulic pump keeps tripping'
+p277
+S' c106'
+p278
+sS'PA damper limits'
+p279
+S' c144'
+p280
+sS'Hydraulic system fault sustained'
+p281
+S' c124'
+p282
+sS'Reject box inner door burnt'
+p283
+S' c103'
+p284
+sS'PF leak - Burner box'
+p285
+S' c93'
+p286
+sS'Reject jet pulsion pump leaking water'
+p287
+S' c20'
+p288
+sS'Hydraulic pump fails to start'
+p289
+S' c105'
+p290
+sS'Hydraulic oil leak - Pump'
+p291
+S' c133'
+p292
+sS'Mill outlet temperature spiking'
+p293
+S' c60'
+p294
+sS'Reject box inner door fault'
+p295
+S' c191'
+p296
+sS'PA damper direction fault'
+p297
+S' c174'
+p298
+sS'Mill motor pullling high amps'
+p299
+S' c185'
+p300
+sS'Feeder gearbox oil level low'
+p301
+S' c11'
+p302
+sS'MIll differential pressure high'
+p303
+S' c27'
+p304
+sS'Rocker arm leaking pf'
+p305
+S' c39'
+p306
+sS'Lub oil flow meter out of commission '
+p307
+S' c166'
+p308
+sS'Rocker arm leaking raw coal'
+p309
+S' c40'
+p310
+sS'Feeder clean out conveyor damaged'
+p311
+S' c72'
+p312
+sS'PA damper mechanically stiff'
+p313
+S' c82'
+p314
+sS'PA damper bearing leaking air'
+p315
+S' c141'
+p316
+sS'Feeder clean out conveyor gearbox oil level low'
+p317
+S' c115'
+p318
+sS'Raw coal hang up'
+p319
+S' c25'
+p320
+sS'Reject box inner door limits to be set'
+p321
+S' c77'
+p322
+sS'Mill VSD fault'
+p323
+S' c13'
+p324
+sS'PA damper VSD fault'
+p325
+S' c88'
+p326
+sS'Reject line blocked'
+p327
+S' c0'
+p328
+sS'Reject cylinder damaged'
+p329
+S' c104'
+p330
+sS'Seal air fan vibration'
+p331
+S' c24'
+p332
+sS'PF distribution box leaking pf'
+p333
+S' c32'
+p334
+sS'Oil burner lance fault'
+p335
+S' c182'
+p336
+sS'PA flow low'
+p337
+S' c122'
+p338
+sS'Reject line damaged'
+p339
+S' c99'
+p340
+sS'PA flow to be verified by P&T'
+p341
+S' c149'
+p342
+sS'Feeder gearbox fault'
+p343
+S' c188'
+p344
+sS'PA damper to be stroke checked'
+p345
+S' c86'
+p346
+sS'Seal air pipe compensator leaking air'
+p347
+S' c202'
+p348
+sS'PA damper fault'
+p349
+S' c146'
+p350
+sS'PA flow transmitter to be calibrated'
+p351
+S' c148'
+p352
+sS'Mill motor nde brg temp high'
+p353
+S' c111'
+p354
+sS'Seal air fan suction filter fault'
+p355
+S' c203'
+p356
+sS'Mill coalgate stuck'
+p357
+S' c66'
+p358
+sS'OIl burner lance fails to ignite'
+p359
+S' c59'
+p360
+sS'Hydraulic oil pressure low'
+p361
+S' c43'
+p362
+sS'Lub oil supply pipe to gearbox leaking lub oil'
+p363
+S' c162'
+p364
+sS'Tempering air damper fails to control on auto'
+p365
+S' c179'
+p366
+sS'Secondary air damper actuator fault'
+p367
+S' c172'
+p368
+sS'Reject box inner door clinker'
+p369
+S' c30'
+p370
+sS'PA flow with damper closed'
+p371
+S' c153'
+p372
+sS'Mill outlet temperature setpoint not controlling'
+p373
+S' c181'
+p374
+sS'Mill motor de brg temp inidication faulty'
+p375
+S' c114'
+p376
+sS'Hydraulic pressure indication fault'
+p377
+S' c126'
+p378
+sS'PA damper fails to control'
+p379
+S' c83'
+p380
+sS'Mill bootseal leaking pf'
+p381
+S' c180'
+p382
+sS'Lub oil temperature gauge fault'
+p383
+S' c170'
+p384
+sS'PA flow indication reading zero'
+p385
+S' c151'
+p386
+sS'Hydraulic loading pressure fluctuating'
+p387
+S' c139'
+p388
+sS'Seal air fan motor fault'
+p389
+S' c204'
+p390
+sS'Reject line pipe disconnected'
+p391
+S' c74'
+p392
+sS'PA load lines to be checked'
+p393
+S' c199'
+p394
+sS'PA damper indication faulty'
+p395
+S' c108'
+p396
+sS'Hydraulic oil filters dirty'
+p397
+S' c28'
+p398
+sS'Oil burner fault'
+p399
+S' c183'
+p400
+sS'Feeder current reading zero'
+p401
+S' c119'
+p402
+sS'Hydraulic pump fault'
+p403
+S' c136'
+p404
+sS'Lub oil pump leaking lub oil'
+p405
+S' c161'
+p406
+sS'Mill motor fails to start'
+p407
+S' c71'
+p408
+sS'PA damper sticking'
+p409
+S' c109'
+p410
 s.
