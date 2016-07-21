@@ -32,19 +32,65 @@ logs = data['description']
 
 
 
-
 del data         #Save memory
 
 data = pd.read_csv('mill_notifications_2015.csv')
 data2 = pd.read_csv('mill_notifications_2014.csv')
 
-data = data['Title'].str.lower()
-data2 = data2['Title'].str.lower()
+#data = data['Title'].str.lower()
+#data2 = data2['Title'].str.lower()
 data2 = data2[100:-1]
 
 logs = pd.concat((data,data2))
 logs = logs.dropna()
 logs = logs.reset_index(drop=True)
+
+logs = logs.str.replace('gc construction',' ')
+logs = logs.str.replace('gc constr',' ')
+logs = logs.str.replace('gc const',' ')
+logs = logs.str.replace('call out',' ')
+logs = logs.str.replace('"',' ')
+logs = logs.str.replace('s/by',' ')
+logs = logs.str.replace('c&i',' ')
+logs = logs.str.replace('emd',' ')
+logs = logs.str.replace('u5',' ')
+logs = logs.str.replace('1a',' ')
+logs = logs.str.replace('1b',' ')
+logs = logs.str.replace('1c',' ')
+logs = logs.str.replace('1d',' ')
+logs = logs.str.replace('1e',' ')
+logs = logs.str.replace('1f',' ')
+logs = logs.str.replace('2a',' ')
+logs = logs.str.replace('2b',' ')
+logs = logs.str.replace('2c',' ')
+logs = logs.str.replace('2d',' ')
+logs = logs.str.replace('2e',' ')
+logs = logs.str.replace('2f',' ')
+logs = logs.str.replace('5a',' ')
+logs = logs.str.replace('5b',' ')
+logs = logs.str.replace('5c',' ')
+logs = logs.str.replace('5d',' ')
+logs = logs.str.replace('5e',' ')
+logs = logs.str.replace('5f',' ')
+logs = logs.str.replace('3f',' ')
+logs = logs.str.replace('3a',' ')
+logs = logs.str.replace('3b',' ')
+logs = logs.str.replace('3c',' ')
+logs = logs.str.replace('3f',' ')
+logs = logs.str.replace('3d',' ')
+logs = logs.str.replace('3e',' ')
+logs = logs.str.replace('4e',' ')
+logs = logs.str.replace('4a',' ')
+logs = logs.str.replace('4b',' ')
+logs = logs.str.replace('4c',' ')
+logs = logs.str.replace('4d',' ')
+logs = logs.str.replace('4e',' ')
+logs = logs.str.replace('4f',' ')
+logs = logs.str.replace('c & i',' ')
+logs = logs.str.replace('c+i',' ')
+logs = logs.str.replace('called out','')
+logs = logs.str.replace(' : ','')
+logs = logs.str.replace('gc',' ')
 
 #Tokenize, remove numbers, punctuation, and split string into a list of words
 #NB excludes alphanum eg. 2A and '1A is kept as a word
@@ -69,7 +115,7 @@ print('Data size', len(words))
 
 # Step 2: Build the dictionary and replace rare words with UNK token.
 #vocabulary_size = 3715
-vocabulary_size = 1854
+vocabulary_size = 1851
 
 def build_dataset(words):
   #Sort words from most common to least common and store in count
@@ -97,7 +143,7 @@ def build_dataset(words):
   return data, count, dictionary, reverse_dictionary
 
 data, count, dictionary, reverse_dictionary = build_dataset(words)
-del words  # Hint to reduce memory.
+#del words  # Hint to reduce memory.
 print('Most common words (+UNK)', count[:5])
 print('Sample data', data[:10])
 
@@ -284,6 +330,8 @@ embedded_log_arrays=[]
 embedded_log_vecs = []
 for idx, tokenized_log in enumerate(tokenized_logs):
     print idx
+    if tokenized_log == []:
+        tokenized_log = ['UNK', 'fault']
     embedded_log = []
     for token in tokenized_log:
          embedding = final_embeddings[dictionary[token],:]
@@ -295,13 +343,17 @@ for idx, tokenized_log in enumerate(tokenized_logs):
 embsum_matrix = np.stack(embedded_log_vecs)
 
 # Step 8: Clustter the logs based on the feauture array built from word embeddings
-from sklearn.cluster import KMeans
+#from sklearn.cluster import KMeans
+from sklearn.cluster import AgglomerativeClustering
 num_clusters = 100
 
-km = KMeans(n_clusters = num_clusters, verbose = True)
-km.fit(embsum_matrix)
+#km = KMeans(n_clusters = num_clusters, verbose = True)
+#km.fit(embsum_matrix)
 
-clusters = km.labels_.tolist()
+agg = AgglomerativeClustering(n_clusters = num_clusters, linkage="average", affinity='cosine')
+agg.fit(embsum_matrix)
+clusters = agg.labels_.tolist()
+#clusters = km.labels_.tolist()
 
 #Create a list of descriptions grouped by cluster
 cluster_list = []
@@ -311,13 +363,20 @@ for i in xrange (num_clusters):
 for idx, cluster in enumerate(clusters):
     cluster_list[cluster].append(logs[idx])
 
+###
+#fdr_clusters = fdr_clusters_df['cluster']
+#clusters_df = clusters_df.join(fdr_clusters)
+#clusters_df.fillna(1000,inplace=True)
+#clusters_df.to_csv('clusters_not_df.csv')
+###
 
 
 #Export latest cluster to csv
 ##################################
-#clusters_df = pd.DataFrame(logs)
-#clusters_df['cluster'] = clusters
-#clusters_df.to_csv('clusters_df.csv')
+clusters_df = pd.DataFrame(logs)
+
+clusters_df['cluster'] = clusters
+clusters_df.to_csv('clusters_not_df.csv')
 ##################################
 #import numpy as np
 #
