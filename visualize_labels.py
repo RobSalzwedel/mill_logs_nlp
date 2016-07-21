@@ -77,7 +77,6 @@ count_pf = 0
 for label in labels_df['label']:
     if sum(l in label for l in Mill.values()):
         count_mill+=1
-        
     if sum(l in label for l in Feeder.values()):
         count_feeder+=1
     if sum(l in label for l in Reject.values()):
@@ -92,30 +91,133 @@ for label in labels_df['label']:
         count_pf+=1
         
         
+
+
+## necessary variables
+count_all = [count_mill, count_feeder, count_reject, count_lub, count_hydraulic,count_pa,count_pf]
+N = len(count_all)
+ind = np.arange(N)                # the x locations for the groups
+width = .7                      # the width of the bars
+
 #TODO: create a bar graph overview for each system
 #TODO: create a bar graph of failures in each system
 fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.set_xticks(ind + width/2)
 ax.set_xticklabels(('Mill', 'Feeder', 'Reject', 'Lub','Hydr','PA','PF'))
-count_all = [count_mill, count_feeder, count_reject, count_lub, count_hydraulic,count_pa,count_pf]
-N = len(count_all)
 
-## necessary variables
-ind = np.arange(N)                # the x locations for the groups
-width = .7                      # the width of the bars
 
 ## the bars
-rects1 = ax.bar(ind, count_all, width,
+rects1 = plt.bar(ind, count_all, width,
                 error_kw=dict(elinewidth=2,ecolor='blue'))
 plt.style.use('seaborn-bright')
 
 
 label_count_dict = dict(label_count)
 
-Mill2 = {}
+#Create dictionaries to plot
+pMill = {}
+pFeeder = {}
+pReject = {}
+pPA = {}
+pPF = {}
+pHydraulic = {}
+pLub = {}
 #Create dictionary with label name : count
 for lc in label_count_dict:
     for m in Mill:
         if lc == Mill[m]:
-            Mill2[m]=lc[lc]
+            pMill[m]=label_count_dict[lc]
+    for f in Feeder:
+        if lc == Feeder[f]:
+            pFeeder[f]=label_count_dict[lc]
+    for r in Reject:
+        if lc == Reject[r]:
+            pReject[r]=label_count_dict[lc]
+    for pa in PA:
+        if lc == PA[pa]:
+            pPA[pa]=label_count_dict[lc]
+    for pf in PF:
+        if lc == PF[pf]:
+            pPF[pf]=label_count_dict[lc]
+    for h in Hydraulic:
+        if lc == Hydraulic[h]:
+            pHydraulic[h]=label_count_dict[lc]
+
+def plot_dict(d,sort = False):
+    '''Creates a bar graph for the dictionary d with xticks = d.keys() and 
+    bar hight = dict.values()
+    
+    Parameters
+    ----------
+    d : dict
+        Dictionary of key value pairs where the key is the category and the value
+        is the category quantity
+    sort : bool
+        Boolean determines whether or not to sort the bar graph based on the 
+        dictionary values
+    '''
+    X = np.arange(len(d))
+    plt.bar(X, list(reversed(sorted(d.values()))), align='center', width=0.7)
+    plt.xticks(X, list(reversed(sorted(d, key=d.get))),rotation='vertical')
+    ymax = max(d.values()) + 1
+    plt.ylim(0, ymax)
+    plt.show()
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+from pylab import *
+
+def click(event):
+   """If the left mouse button is pressed: draw a little square. """
+   tb = get_current_fig_manager().toolbar
+   if event.button==1 and event.inaxes and tb.mode == '':
+       x,y = event.xdata,event.ydata
+       plot([x],[y],'rs')
+       draw()
+
+plot((arange(100)/99.0)**3)
+gca().set_autoscale_on(False)
+connect('button_press_event',click)
+show()
+
+# Plot time line of events
+# Need to load in the full logs... something went wrong with the labelling process
+import random
+import numpy as np
+import matplotlib.pyplot as plt
+
+data = pd.read_csv('mill_notifications_2015.csv')
+data2 = pd.read_csv('mill_notifications_2014.csv')
+
+#data = data['Title'].str.lower()
+#data2 = data2['Title'].str.lower()
+data2 = data2[100:-1]
+
+logs = pd.concat((data,data2))
+logs = logs.dropna()
+logs = logs.reset_index(drop=True)
+
+a  = logs['textbox19']
+a.astype(str)
+
+output = []
+for x in a.tolist():
+    if x not in output:
+        output.append(x)
+        print output
+        
+df = pd.DataFrame(data=a.tolist(), index=pandas.DatetimeIndex(logs['DateInitiated']), columns=['categories'])
+
+
+
+cat_dict = dict(zip(output, range(1, len(output)+1)))
+val_dict = dict(zip(range(1, len(output)+1), output))
+
+df['plotval'] = df['categories'].apply(cat_dict.get)
+
+fig, ax = plt.subplots()
+df['plotval'].plot(ax=ax, style='.')
+ax.margins(0.2)
